@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["ErrorKind","ObjectMode"],"mod":["cache_policy","layers","services","test_util","util"],"struct":["Error","Object","ObjectLister","ObjectMetadata","ObjectStore"],"trait":["ObjectStoreBuilder"],"type":["Result"]};

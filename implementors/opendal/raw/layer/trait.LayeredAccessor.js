@@ -1,0 +1,3 @@
+(function() {var implementors = {
+"object_store":[["impl&lt;I: Accessor, C: Accessor&gt; LayeredAccessor for <a class=\"struct\" href=\"object_store/cache_policy/struct.LruCacheAccessor.html\" title=\"struct object_store::cache_policy::LruCacheAccessor\">LruCacheAccessor</a>&lt;I, C&gt;"]]
+};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

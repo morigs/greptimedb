@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["encode_binary_value","encode_text_value","output_to_query_response","parameter_to_string","recordbatches_to_query_response","schema_to_pg","type_gt_to_pg","type_pg_to_gt"],"struct":["POCQueryParser"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["CELL"],"enum":["BackendType","Either"],"fn":["__getit","__init","check_args_anno_real_type","exec_parsed","select_from_rb"],"mod":["compile","parse"],"static":["CELL","__KEY"],"struct":["AnnotationInfo","Coprocessor","PyQueryEngine","QueryEngineWeakRef"],"type":["CoprocessorRef"]};

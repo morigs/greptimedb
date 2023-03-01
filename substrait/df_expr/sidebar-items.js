@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["convert_column","convert_scalar_function","convert_selection_rex","expression_from_df_expr","to_df_expr"],"mod":["utils"]};

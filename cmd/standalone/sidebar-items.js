@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["FIELDS"],"enum":["SubCommand","__Field"],"fn":["build_frontend"],"opaque":[""],"static":["CALLSITE","META"],"struct":["Command","StandaloneOptions","StartCommand","__FieldVisitor","__Visitor"]};

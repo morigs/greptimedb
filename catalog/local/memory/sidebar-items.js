@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["new_memory_catalog_list"],"static":["CALLSITE","META"],"struct":["MemoryCatalogManager","MemoryCatalogProvider","MemorySchemaProvider"]};

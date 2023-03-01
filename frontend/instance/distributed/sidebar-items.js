@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["create_table_info","find_partition_columns","find_partition_entries","parse_partitions"],"mod":["grpc"],"opaque":[""],"static":["CALLSITE","META"],"struct":["DistInstance"]};

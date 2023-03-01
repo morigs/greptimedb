@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Error"],"struct":["AccessCatalogSnafu","CatalogNotFoundSnafu","DeserializeProcedureSnafu","InvalidRawSchemaSnafu","SchemaNotFoundSnafu","SerializeProcedureSnafu","SubprocedureFailedSnafu"],"type":["Result"]};

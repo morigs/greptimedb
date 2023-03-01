@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["METRIC_NAME_LABEL","TIMESTAMP_COLUMN_NAME","VALUE_COLUMN_NAME"],"fn":["collect_timeseries_ids","mock_timeseries","new_label","query_to_sql","recordbatch_to_timeseries","recordbatches_to_timeseries","snappy_compress","snappy_decompress","to_grpc_insert_request","to_grpc_insert_requests"],"struct":["Metrics","TimeSeriesId"]};

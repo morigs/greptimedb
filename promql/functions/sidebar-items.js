@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["extract_array"],"mod":["idelta","increase"],"struct":["IDelta","Increase"]};

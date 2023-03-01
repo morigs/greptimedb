@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["BRANCHES"],"enum":["SubCommand"],"fn":["main","print_version"],"opaque":[""],"static":["CALLSITE","META"],"struct":["Command"]};

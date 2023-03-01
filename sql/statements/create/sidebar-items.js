@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["TIME_INDEX"],"struct":["CreateDatabase","CreateTable","PartitionEntry","Partitions"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["client","manager"],"struct":["Kv","MetaKvBackend","RemoteCatalogManager","RemoteCatalogProvider","RemoteSchemaProvider"],"trait":["KvBackend"],"type":["KvBackendRef","ValueIter"]};

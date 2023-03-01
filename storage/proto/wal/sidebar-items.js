@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["STRUCT_NAME"],"enum":["MutationType"],"fn":["ScalarWrapper","gen_mutation_types"],"struct":["Inner","ScalarWrapper","WalHeader"]};

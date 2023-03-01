@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["DATANODE_ADDR","DATANODE_LOG_FILE","FRONTEND_LOG_FILE","METASRV_ADDR","METASRV_LOG_FILE","SERVER_ADDR","SERVER_LOG_FILE"],"opaque":[""],"struct":["Context","Env","GreptimeDB","ResultDisplayer"]};

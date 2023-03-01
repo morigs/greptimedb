@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["TAG_SEMANTIC_TYPE","TIMESTAMP_SEMANTIC_TYPE"],"fn":["add_values_to_builder","build_column_def","build_create_expr_from_insertion","collect_column_values","column_to_vector","convert_values","find_new_columns","is_null","to_table_insert_request"],"macro":["collect_values"]};

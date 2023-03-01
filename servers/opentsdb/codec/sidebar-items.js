@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["OPENTSDB_TIMESTAMP_COLUMN_NAME","OPENTSDB_VALUE_COLUMN_NAME"],"struct":["DataPoint"]};

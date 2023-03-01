@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["RECYCLE_CHANNEL_INTERVAL_SECS"],"fn":["recycle_channel_in_loop"],"opaque":[""],"struct":["Channel","ChannelConfig","ChannelManager","ClientTlsOption","Pool"]};

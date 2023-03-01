@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["create_compaction_scheduler","create_log_store","create_object_store_with_cache","create_procedure_manager","new_fs_object_store","new_metasrv_client","new_object_store","new_oss_object_store","new_s3_object_store"],"mod":["grpc","script","sql"],"opaque":[""],"static":["CALLSITE","META"],"struct":["Instance"],"type":["DefaultEngine","InstanceRef"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["DEFAULT_RESULT_SET_WRITE_BUFFER_SIZE"],"opaque":[""],"static":["CALLSITE","META"],"struct":["MysqlServer","MysqlSpawnConfig","MysqlSpawnRef"]};

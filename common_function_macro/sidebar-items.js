@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"attr":["as_aggr_func_creator"],"derive":["AggrFuncTypeStore"],"fn":["impl_aggr_func_type_store"],"static":["_DECLS"]};

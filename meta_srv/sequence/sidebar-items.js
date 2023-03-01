@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"opaque":[""],"struct":["Inner","Sequence"],"type":["SequenceRef"]};

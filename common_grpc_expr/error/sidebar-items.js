@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Error"],"struct":["ColumnDataTypeSnafu","ColumnDefaultConstraintSnafu","ColumnNotFoundSnafu","CreateVectorSnafu","DecodeInsertSnafu","DuplicatedTimestampColumnSnafu","IllegalInsertDataSnafu","InvalidColumnDefSnafu","InvalidColumnProtoSnafu","MissingFieldSnafu","MissingTimestampColumnSnafu","UnrecognizedTableOptionSnafu"],"type":["Result"]};

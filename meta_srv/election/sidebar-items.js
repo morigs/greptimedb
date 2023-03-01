@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["ELECTION_KEY","KEEP_ALIVE_PERIOD_SECS","LEASE_SECS"],"mod":["etcd"],"trait":["Election"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["FIELDS"],"enum":["__Field"],"struct":["RawSchema","__FieldVisitor","__Visitor"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["BRANCHES","STATE_AWAIT_TERMINATION","STATE_RUNNING","STATE_STOP"],"mod":["dedup_deque","rate_limit"],"opaque":[""],"static":["CALLSITE","META"],"struct":["HandlerLoop","LocalScheduler","SchedulerConfig"],"trait":["Handler","Request","Scheduler"]};

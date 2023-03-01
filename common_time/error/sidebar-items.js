@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Error"],"struct":["ArithmeticOverflowSnafu","ParseDateStrSnafu","ParseTimestampSnafu","TimestampOverflowSnafu"],"type":["Result"]};

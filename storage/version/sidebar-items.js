@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["INIT_COMMITTED_SEQUENCE"],"static":["CALLSITE","META"],"struct":["Version","VersionControl","VersionEdit"],"type":["LevelMetasRef","MemtableVersionRef","VersionControlRef","VersionRef"]};

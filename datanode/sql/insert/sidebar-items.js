@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["DEFAULT_PLACEHOLDER_VALUE"],"enum":["InsertRequests"],"fn":["add_row_to_vector","replace_default"],"opaque":[""],"type":["InsertRequestStream"]};

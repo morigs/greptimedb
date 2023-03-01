@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["FIELDS","VARIANTS"],"enum":["RegionMetaAction","__Field"],"struct":["RawColumnFamiliesMetadata","RawColumnsMetadata","RawRegionMetadata","RegionChange","RegionEdit","RegionMetaActionList","RegionRemove","__FieldVisitor","__Visitor"]};

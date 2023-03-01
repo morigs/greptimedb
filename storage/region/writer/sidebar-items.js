@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"opaque":[""],"static":["CALLSITE","META"],"struct":["AlterContext","RegionWriter","WriterContext","WriterInner"],"type":["RegionWriterRef"]};

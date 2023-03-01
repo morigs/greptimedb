@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["FIELDS","VARIANTS"],"enum":["CreateTableState","__Field"],"opaque":[""],"struct":["CreateMitoTable","CreateTableData","__FieldVisitor","__Visitor"]};

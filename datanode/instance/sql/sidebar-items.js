@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["table_idents_to_full_name"],"opaque":[""],"static":["CALLSITE","META"]};

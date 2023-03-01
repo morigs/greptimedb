@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["equal"],"macro":["__with_ty__","is_vector_eq"]};

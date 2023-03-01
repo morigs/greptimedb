@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["project_schema"],"mod":["insert","scan"],"opaque":[""],"static":["CALLSITE","META"],"struct":["DistTable","DistTableScan","PartitionExec"]};

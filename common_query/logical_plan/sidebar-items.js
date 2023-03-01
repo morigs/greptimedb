@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["DfExpr"],"fn":["create_aggregate_function","create_udf"],"mod":["accumulator","expr","udaf","udf"],"struct":["AggregateFunction","Expr","ScalarUdf"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["DEFAULT_CONSTRAINT_KEY","FIELDS","TIME_INDEX_KEY"],"enum":["__Field"],"struct":["ColumnSchema","__FieldVisitor","__Visitor"],"type":["Metadata"]};

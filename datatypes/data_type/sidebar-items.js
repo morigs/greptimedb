@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["VARIANTS"],"enum":["ConcreteDataType","__Field"],"macro":["impl_new_concrete_type_functions"],"struct":["__FieldVisitor","__Visitor"],"trait":["DataType"],"type":["DataTypeRef"]};

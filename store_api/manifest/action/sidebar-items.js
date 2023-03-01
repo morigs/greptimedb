@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["FIELDS","READER_VERSION","WRITER_VERSION"],"enum":["__Field"],"fn":["supported_protocol_version"],"struct":["ProtocolAction","VersionHeader","__FieldVisitor","__Visitor"],"type":["ProtocolVersion"]};

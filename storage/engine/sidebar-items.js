@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["RegionSlot"],"fn":["region_manifest_dir","region_sst_dir"],"opaque":[""],"static":["CALLSITE","META"],"struct":["EngineImpl","EngineInner","SlotGuard"],"type":["RegionMap"]};

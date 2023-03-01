@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["BinaryOperator","ColumnOption","DataType","Expr","FunctionArg","FunctionArgExpr","TableConstraint","TimezoneInfo","Value"],"struct":["ColumnDef","ColumnOptionDef","Function","Ident","ObjectName","SqlOption"]};

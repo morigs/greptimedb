@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["from_concrete_type","literal_type_to_scalar_value","scalar_value_as_literal_type","to_concrete_type"],"macro":["build_substrait_kind","substrait_kind"]};

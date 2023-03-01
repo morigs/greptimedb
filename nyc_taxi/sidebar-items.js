@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["CATALOG_NAME","SCHEMA_NAME","TABLE_NAME"],"fn":["build_values","convert_record_batch","create_table_expr","do_query","do_write","get_file_list","main","query_set","write_data"],"opaque":[""],"static":["DEFAULT_VALUE"],"struct":["Args"]};

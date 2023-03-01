@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["grpc","sql"],"struct":["PrometheusResponse"],"trait":["InfluxdbLineProtocolHandler","OpentsdbProtocolHandler","PrometheusProtocolHandler","ScriptHandler"],"type":["InfluxdbLineProtocolHandlerRef","OpentsdbProtocolHandlerRef","PrometheusProtocolHandlerRef","ScriptHandlerRef"]};

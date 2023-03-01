@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["VARIANTS"],"enum":["PartitionBound","__Field"],"struct":["PartitionDef","PartitionExpr","__FieldVisitor","__Visitor"],"trait":["PartitionRule"],"type":["PartitionRuleRef"]};

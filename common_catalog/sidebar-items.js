@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["format_full_table_name"],"mod":["consts","error"]};

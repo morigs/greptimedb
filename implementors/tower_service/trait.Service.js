@@ -1,0 +1,3 @@
+(function() {var implementors = {
+"meta_srv":[["impl&lt;T&gt; Service&lt;<a class=\"struct\" href=\"https://docs.rs/http/0.2.8/http/request/struct.Request.html\" title=\"struct http::request::Request\">Request</a>&lt;T&gt;&gt; for <a class=\"struct\" href=\"meta_srv/service/admin/struct.Admin.html\" title=\"struct meta_srv::service::admin::Admin\">Admin</a><span class=\"where fmt-newline\">where\n    T: <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/marker/trait.Send.html\" title=\"trait core::marker::Send\">Send</a>,</span>"]]
+};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

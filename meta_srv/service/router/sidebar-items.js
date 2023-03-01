@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["create_table_global_value","fetch_tables","fill_table_routes","get_table_global_value","get_table_route_value","handle_create","handle_delete","handle_route","move_value","remove_table_global_value","remove_table_route_value"],"opaque":[""],"static":["CALLSITE","META"]};

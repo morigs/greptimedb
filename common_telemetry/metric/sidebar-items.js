@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["init_default_metrics_recorder","init_prometheus_recorder","try_handle"],"static":["CALLSITE","META","PROMETHEUS_HANDLE","START"],"struct":["PrometheusHandle","Timer"]};

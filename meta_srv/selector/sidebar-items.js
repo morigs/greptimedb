@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["VARIANTS"],"enum":["SelectorType","__Field"],"mod":["lease_based","load_based"],"struct":["__FieldVisitor","__Visitor"],"trait":["Selector"],"type":["Namespace"]};

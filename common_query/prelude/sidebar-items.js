@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["ScalarValue","TypeSignature","Volatility"],"fn":["make_scalar_function","to_df_return_type"],"struct":["AggregateFunction","Expr","ScalarUdf","Signature"],"type":["AccumulatorCreatorFunction","AccumulatorFunctionImpl","ReturnTypeFunction","ScalarFunctionImplementation","StateTypeFunction"]};

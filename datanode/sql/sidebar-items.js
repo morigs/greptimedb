@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["SqlRequest"],"mod":["alter","copy_table","create","delete","drop_table","insert"],"opaque":[""],"static":["CALLSITE","META"],"struct":["SqlHandler"]};

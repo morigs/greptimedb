@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["INNER_ERROR_CODE","INNER_ERROR_MSG"],"derive":["Snafu"],"macro":["ensure","ensure_whatever","whatever"],"struct":["Backtrace"],"trait":["ErrorCompat","_"]};

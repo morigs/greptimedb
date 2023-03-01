@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["TIME_BUCKETS"],"fn":["calculate_time_buckets","file_time_bucket_span","find_compactable_files","fit_time_bucket","infer_time_bucket"],"static":["CALLSITE","META"],"struct":["SimpleTimeWindowStrategy"],"trait":["Strategy"],"type":["StrategyRef"]};

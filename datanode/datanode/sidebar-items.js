@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["DEFAULT_OBJECT_STORE_CACHE_SIZE","FIELDS","VARIANTS"],"enum":["ObjectStoreConfig","__Field"],"opaque":[""],"static":["CALLSITE","META"],"struct":["CompactionConfig","Datanode","DatanodeOptions","FileConfig","OssConfig","ProcedureConfig","S3Config","WalConfig","__DeserializeWith","__FieldVisitor","__SerializeWith","__Visitor"]};

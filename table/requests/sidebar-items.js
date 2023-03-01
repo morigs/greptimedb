@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["FIELDS","TTL_KEY","WRITE_BUFFER_SIZE_KEY"],"enum":["AlterKind","__Field"],"struct":["AddColumnRequest","AlterTableRequest","CopyTableRequest","CreateDatabaseRequest","CreateTableRequest","DeleteRequest","DropTableRequest","InsertRequest","OpenTableRequest","TableOptions","__DeserializeWith","__FieldVisitor","__SerializeWith","__Visitor"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["heartbeat","load_balance","lock","router","store"],"opaque":[""],"static":["CALLSITE","META"],"struct":["HeartbeatSender","HeartbeatStream","MetaClient","MetaClientBuilder"],"type":["Id"]};

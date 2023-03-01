@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["file_descriptor_proto","parse_descriptor_proto"],"static":["descriptor","file_descriptor_proto_data","file_descriptor_proto_lazy","instance"],"struct":["EntryImpl","LogStoreState","NamespaceImpl"]};

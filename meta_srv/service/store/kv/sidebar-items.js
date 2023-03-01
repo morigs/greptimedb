@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"trait":["KvStore","ResettableKvStore"],"type":["KvStoreRef","ResettableKvStoreRef"]};
