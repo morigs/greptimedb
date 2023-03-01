@@ -261,6 +261,19 @@
 <a href="#261" id="261">261</a>
 <a href="#262" id="262">262</a>
 <a href="#263" id="263">263</a>
+<a href="#264" id="264">264</a>
+<a href="#265" id="265">265</a>
+<a href="#266" id="266">266</a>
+<a href="#267" id="267">267</a>
+<a href="#268" id="268">268</a>
+<a href="#269" id="269">269</a>
+<a href="#270" id="270">270</a>
+<a href="#271" id="271">271</a>
+<a href="#272" id="272">272</a>
+<a href="#273" id="273">273</a>
+<a href="#274" id="274">274</a>
+<a href="#275" id="275">275</a>
+<a href="#276" id="276">276</a>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2023 Greptime Team
 //
 // Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -413,27 +426,68 @@
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>tests {
     <span class="kw">use </span>std::assert_matches::assert_matches;
+    <span class="kw">use </span>std::io::Write;
     <span class="kw">use </span>std::time::Duration;
 
     <span class="kw">use </span>datanode::datanode::{CompactionConfig, ObjectStoreConfig};
     <span class="kw">use </span>servers::Mode;
+    <span class="kw">use </span>tempfile::NamedTempFile;
 
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_read_from_config_file() {
+        <span class="kw">let </span><span class="kw-2">mut </span>file = NamedTempFile::new().unwrap();
+        <span class="kw">let </span>toml_str = <span class="string">r#&quot;
+            mode = &quot;distributed&quot;
+            enable_memory_catalog = false
+            node_id = 42
+            rpc_addr = &quot;127.0.0.1:3001&quot;
+            rpc_hostname = &quot;127.0.0.1&quot;
+            rpc_runtime_size = 8
+            mysql_addr = &quot;127.0.0.1:4406&quot;
+            mysql_runtime_size = 2
+
+            [meta_client_options]
+            metasrv_addrs = [&quot;127.0.0.1:3002&quot;]
+            timeout_millis = 3000
+            connect_timeout_millis = 5000
+            tcp_nodelay = true
+
+            [wal]
+            dir = &quot;/tmp/greptimedb/wal&quot;
+            file_size = &quot;1GB&quot;
+            purge_threshold = &quot;50GB&quot;
+            purge_interval = &quot;10m&quot;
+            read_batch_size = 128
+            sync_write = false
+
+            [storage]
+            type = &quot;File&quot;
+            data_dir = &quot;/tmp/greptimedb/data/&quot;
+
+            [compaction]
+            max_inflight_tasks = 4
+            max_files_in_level0 = 8
+            max_purge_tasks = 32
+        &quot;#</span>;
+        <span class="macro">write!</span>(file, <span class="string">&quot;{}&quot;</span>, toml_str).unwrap();
+
         <span class="kw">let </span>cmd = StartCommand {
-            config_file: <span class="prelude-val">Some</span>(<span class="macro">format!</span>(
-                <span class="string">&quot;{}/../../config/datanode.example.toml&quot;</span>,
-                std::env::current_dir().unwrap().as_path().to_str().unwrap()
-            )),
+            config_file: <span class="prelude-val">Some</span>(file.path().to_str().unwrap().to_string()),
             ..Default::default()
         };
         <span class="kw">let </span>options: DatanodeOptions = cmd.try_into().unwrap();
         <span class="macro">assert_eq!</span>(<span class="string">&quot;127.0.0.1:3001&quot;</span>.to_string(), options.rpc_addr);
-        <span class="macro">assert_eq!</span>(<span class="string">&quot;/tmp/greptimedb/wal&quot;</span>.to_string(), options.wal.dir);
         <span class="macro">assert_eq!</span>(<span class="string">&quot;127.0.0.1:4406&quot;</span>.to_string(), options.mysql_addr);
-        <span class="macro">assert_eq!</span>(<span class="number">4</span>, options.mysql_runtime_size);
+        <span class="macro">assert_eq!</span>(<span class="number">2</span>, options.mysql_runtime_size);
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Some</span>(<span class="number">42</span>), options.node_id);
+
+        <span class="macro">assert_eq!</span>(Duration::from_secs(<span class="number">600</span>), options.wal.purge_interval);
+        <span class="macro">assert_eq!</span>(<span class="number">1024 </span>* <span class="number">1024 </span>* <span class="number">1024</span>, options.wal.file_size.<span class="number">0</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1024 </span>* <span class="number">1024 </span>* <span class="number">1024 </span>* <span class="number">50</span>, options.wal.purge_threshold.<span class="number">0</span>);
+        <span class="macro">assert!</span>(!options.wal.sync_write);
+
         <span class="kw">let </span>MetaClientOptions {
             metasrv_addrs: metasrv_addr,
             timeout_millis,
@@ -444,7 +498,7 @@
         <span class="macro">assert_eq!</span>(<span class="macro">vec!</span>[<span class="string">&quot;127.0.0.1:3002&quot;</span>.to_string()], metasrv_addr);
         <span class="macro">assert_eq!</span>(<span class="number">5000</span>, connect_timeout_millis);
         <span class="macro">assert_eq!</span>(<span class="number">3000</span>, timeout_millis);
-        <span class="macro">assert!</span>(!tcp_nodelay);
+        <span class="macro">assert!</span>(tcp_nodelay);
 
         <span class="kw">match </span>options.storage {
             ObjectStoreConfig::File(FileConfig { data_dir }) =&gt; {
@@ -457,7 +511,7 @@
         <span class="macro">assert_eq!</span>(
             CompactionConfig {
                 max_inflight_tasks: <span class="number">4</span>,
-                max_files_in_level0: <span class="number">16</span>,
+                max_files_in_level0: <span class="number">8</span>,
                 max_purge_tasks: <span class="number">32</span>,
             },
             options.compaction
@@ -494,34 +548,6 @@
             ..Default::default()
         })
         .unwrap();
-    }
-
-    <span class="attr">#[test]
-    </span><span class="kw">fn </span>test_merge_config() {
-        <span class="kw">let </span>dn_opts = DatanodeOptions::try_from(StartCommand {
-            config_file: <span class="prelude-val">Some</span>(<span class="macro">format!</span>(
-                <span class="string">&quot;{}/../../config/datanode.example.toml&quot;</span>,
-                std::env::current_dir().unwrap().as_path().to_str().unwrap()
-            )),
-            ..Default::default()
-        })
-        .unwrap();
-        <span class="macro">assert_eq!</span>(<span class="string">&quot;/tmp/greptimedb/wal&quot;</span>, dn_opts.wal.dir);
-        <span class="macro">assert_eq!</span>(Duration::from_secs(<span class="number">600</span>), dn_opts.wal.purge_interval);
-        <span class="macro">assert_eq!</span>(<span class="number">1024 </span>* <span class="number">1024 </span>* <span class="number">1024</span>, dn_opts.wal.file_size.<span class="number">0</span>);
-        <span class="macro">assert_eq!</span>(<span class="number">1024 </span>* <span class="number">1024 </span>* <span class="number">1024 </span>* <span class="number">50</span>, dn_opts.wal.purge_threshold.<span class="number">0</span>);
-        <span class="macro">assert!</span>(!dn_opts.wal.sync_write);
-        <span class="macro">assert_eq!</span>(<span class="prelude-val">Some</span>(<span class="number">42</span>), dn_opts.node_id);
-        <span class="kw">let </span>MetaClientOptions {
-            metasrv_addrs: metasrv_addr,
-            timeout_millis,
-            connect_timeout_millis,
-            tcp_nodelay,
-        } = dn_opts.meta_client_options.unwrap();
-        <span class="macro">assert_eq!</span>(<span class="macro">vec!</span>[<span class="string">&quot;127.0.0.1:3002&quot;</span>.to_string()], metasrv_addr);
-        <span class="macro">assert_eq!</span>(<span class="number">3000</span>, timeout_millis);
-        <span class="macro">assert_eq!</span>(<span class="number">5000</span>, connect_timeout_millis);
-        <span class="macro">assert!</span>(!tcp_nodelay);
     }
 }
 </code></pre></div>

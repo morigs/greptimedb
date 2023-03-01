@@ -155,6 +155,17 @@
 <a href="#155" id="155">155</a>
 <a href="#156" id="156">156</a>
 <a href="#157" id="157">157</a>
+<a href="#158" id="158">158</a>
+<a href="#159" id="159">159</a>
+<a href="#160" id="160">160</a>
+<a href="#161" id="161">161</a>
+<a href="#162" id="162">162</a>
+<a href="#163" id="163">163</a>
+<a href="#164" id="164">164</a>
+<a href="#165" id="165">165</a>
+<a href="#166" id="166">166</a>
+<a href="#167" id="167">167</a>
+<a href="#168" id="168">168</a>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2023 Greptime Team
 //
 // Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -270,7 +281,10 @@
 
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>tests {
+    <span class="kw">use </span>std::io::Write;
+
     <span class="kw">use </span>meta_srv::selector::SelectorType;
+    <span class="kw">use </span>tempfile::NamedTempFile;
 
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
@@ -293,15 +307,23 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_read_from_config_file() {
+        <span class="kw">let </span><span class="kw-2">mut </span>file = NamedTempFile::new().unwrap();
+        <span class="kw">let </span>toml_str = <span class="string">r#&quot;
+            bind_addr = &quot;127.0.0.1:3002&quot;
+            server_addr = &quot;127.0.0.1:3002&quot;
+            store_addr = &quot;127.0.0.1:2379&quot;
+            datanode_lease_secs = 15
+            selector = &quot;LeaseBased&quot;
+            use_memory_store = false
+        &quot;#</span>;
+        <span class="macro">write!</span>(file, <span class="string">&quot;{}&quot;</span>, toml_str).unwrap();
+
         <span class="kw">let </span>cmd = StartCommand {
             bind_addr: <span class="prelude-val">None</span>,
             server_addr: <span class="prelude-val">None</span>,
             store_addr: <span class="prelude-val">None</span>,
             selector: <span class="prelude-val">None</span>,
-            config_file: <span class="prelude-val">Some</span>(<span class="macro">format!</span>(
-                <span class="string">&quot;{}/../../config/metasrv.example.toml&quot;</span>,
-                std::env::current_dir().unwrap().as_path().to_str().unwrap()
-            )),
+            config_file: <span class="prelude-val">Some</span>(file.path().to_str().unwrap().to_string()),
             use_memory_store: <span class="bool-val">false</span>,
         };
         <span class="kw">let </span>options: MetaSrvOptions = cmd.try_into().unwrap();

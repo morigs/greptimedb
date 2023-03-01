@@ -291,6 +291,15 @@
 <a href="#291" id="291">291</a>
 <a href="#292" id="292">292</a>
 <a href="#293" id="293">293</a>
+<a href="#294" id="294">294</a>
+<a href="#295" id="295">295</a>
+<a href="#296" id="296">296</a>
+<a href="#297" id="297">297</a>
+<a href="#298" id="298">298</a>
+<a href="#299" id="299">299</a>
+<a href="#300" id="300">300</a>
+<a href="#301" id="301">301</a>
+<a href="#302" id="302">302</a>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2023 Greptime Team
 //
 // Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -466,9 +475,11 @@
 
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>tests {
+    <span class="kw">use </span>std::io::Write;
     <span class="kw">use </span>std::time::Duration;
 
     <span class="kw">use </span>servers::auth::{Identity, Password, UserProviderRef};
+    <span class="kw">use </span>tempfile::NamedTempFile;
 
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
@@ -524,6 +535,16 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_read_from_config_file() {
+        <span class="kw">let </span><span class="kw-2">mut </span>file = NamedTempFile::new().unwrap();
+        <span class="kw">let </span>toml_str = <span class="string">r#&quot;
+            mode = &quot;distributed&quot;
+
+            [http_options]
+            addr = &quot;127.0.0.1:4000&quot;
+            timeout = &quot;30s&quot;
+        &quot;#</span>;
+        <span class="macro">write!</span>(file, <span class="string">&quot;{}&quot;</span>, toml_str).unwrap();
+
         <span class="kw">let </span>command = StartCommand {
             http_addr: <span class="prelude-val">None</span>,
             grpc_addr: <span class="prelude-val">None</span>,
@@ -531,10 +552,7 @@
             postgres_addr: <span class="prelude-val">None</span>,
             opentsdb_addr: <span class="prelude-val">None</span>,
             influxdb_enable: <span class="prelude-val">None</span>,
-            config_file: <span class="prelude-val">Some</span>(<span class="macro">format!</span>(
-                <span class="string">&quot;{}/../../config/frontend.example.toml&quot;</span>,
-                std::env::current_dir().unwrap().as_path().to_str().unwrap()
-            )),
+            config_file: <span class="prelude-val">Some</span>(file.path().to_str().unwrap().to_string()),
             metasrv_addr: <span class="prelude-val">None</span>,
             tls_mode: <span class="prelude-val">None</span>,
             tls_cert_path: <span class="prelude-val">None</span>,

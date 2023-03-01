@@ -15,7 +15,7 @@
 <span class="item-spacer"></span>    fn <a href="#method.pre_execute" class="fn">pre_execute</a>(
         &amp;self,
         _statement: &amp;Statement,
-        _plan: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;LogicalPlan&gt;,
+        _plan: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;<a class="enum" href="../../query/plan/enum.LogicalPlan.html" title="enum query::plan::LogicalPlan">LogicalPlan</a>&gt;,
         _query_ctx: <a class="type" href="../../session/context/type.QueryContextRef.html" title="type session::context::QueryContextRef">QueryContextRef</a>
     ) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>, Self::<a class="associatedtype" href="trait.SqlQueryInterceptor.html#associatedtype.Error" title="type servers::interceptor::SqlQueryInterceptor::Error">Error</a>&gt; { ... }
 <span class="item-spacer"></span>    fn <a href="#method.post_execute" class="fn">post_execute</a>(
@@ -41,7 +41,7 @@ abort execution by raising an error.</p>
 </div></details><details class="toggle method-toggle" open><summary><section id="method.pre_execute" class="method"><a class="srclink rightside" href="../../src/servers/interceptor.rs.html#51-58">source</a><h4 class="code-header">fn <a href="#method.pre_execute" class="fn">pre_execute</a>(
     &amp;self,
     _statement: &amp;Statement,
-    _plan: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;LogicalPlan&gt;,
+    _plan: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;<a class="enum" href="../../query/plan/enum.LogicalPlan.html" title="enum query::plan::LogicalPlan">LogicalPlan</a>&gt;,
     _query_ctx: <a class="type" href="../../session/context/type.QueryContextRef.html" title="type session::context::QueryContextRef">QueryContextRef</a>
 ) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>, Self::<a class="associatedtype" href="trait.SqlQueryInterceptor.html#associatedtype.Error" title="type servers::interceptor::SqlQueryInterceptor::Error">Error</a>&gt;</h4></section></summary><div class="docblock"><p>Called before sql is actually executed. This hook is not called at the moment.</p>
 </div></details><details class="toggle method-toggle" open><summary><section id="method.post_execute" class="method"><a class="srclink rightside" href="../../src/servers/interceptor.rs.html#62-68">source</a><h4 class="code-header">fn <a href="#method.post_execute" class="fn">post_execute</a>(
@@ -62,7 +62,7 @@ output if needed.</p>
 ) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;Statement&gt;, Self::<a class="associatedtype" href="trait.SqlQueryInterceptor.html#associatedtype.Error" title="type servers::interceptor::SqlQueryInterceptor::Error">Error</a>&gt;</h4></section><section id="method.pre_execute-1" class="method trait-impl"><a class="srclink rightside" href="../../src/servers/interceptor.rs.html#104-115">source</a><a href="#method.pre_execute-1" class="anchor">§</a><h4 class="code-header">fn <a href="#method.pre_execute" class="fn">pre_execute</a>(
     &amp;self,
     statement: &amp;Statement,
-    plan: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;LogicalPlan&gt;,
+    plan: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;<a class="enum" href="../../query/plan/enum.LogicalPlan.html" title="enum query::plan::LogicalPlan">LogicalPlan</a>&gt;,
     query_ctx: <a class="type" href="../../session/context/type.QueryContextRef.html" title="type session::context::QueryContextRef">QueryContextRef</a>
 ) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>, Self::<a class="associatedtype" href="trait.SqlQueryInterceptor.html#associatedtype.Error" title="type servers::interceptor::SqlQueryInterceptor::Error">Error</a>&gt;</h4></section><section id="method.post_execute-1" class="method trait-impl"><a class="srclink rightside" href="../../src/servers/interceptor.rs.html#117-127">source</a><a href="#method.post_execute-1" class="anchor">§</a><h4 class="code-header">fn <a href="#method.post_execute" class="fn">post_execute</a>(
     &amp;self,
