@@ -1589,6 +1589,32 @@
 <a href="#1589" id="1589">1589</a>
 <a href="#1590" id="1590">1590</a>
 <a href="#1591" id="1591">1591</a>
+<a href="#1592" id="1592">1592</a>
+<a href="#1593" id="1593">1593</a>
+<a href="#1594" id="1594">1594</a>
+<a href="#1595" id="1595">1595</a>
+<a href="#1596" id="1596">1596</a>
+<a href="#1597" id="1597">1597</a>
+<a href="#1598" id="1598">1598</a>
+<a href="#1599" id="1599">1599</a>
+<a href="#1600" id="1600">1600</a>
+<a href="#1601" id="1601">1601</a>
+<a href="#1602" id="1602">1602</a>
+<a href="#1603" id="1603">1603</a>
+<a href="#1604" id="1604">1604</a>
+<a href="#1605" id="1605">1605</a>
+<a href="#1606" id="1606">1606</a>
+<a href="#1607" id="1607">1607</a>
+<a href="#1608" id="1608">1608</a>
+<a href="#1609" id="1609">1609</a>
+<a href="#1610" id="1610">1610</a>
+<a href="#1611" id="1611">1611</a>
+<a href="#1612" id="1612">1612</a>
+<a href="#1613" id="1613">1613</a>
+<a href="#1614" id="1614">1614</a>
+<a href="#1615" id="1615">1615</a>
+<a href="#1616" id="1616">1616</a>
+<a href="#1617" id="1617">1617</a>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2023 Greptime Team
 //
 // Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -1637,11 +1663,17 @@
     UnsupportedExprSnafu, ValueNotFoundSnafu,
 };
 <span class="kw">use </span><span class="kw">crate</span>::extension_plan::{
-    InstantManipulate, Millisecond, RangeManipulate, SeriesDivide, SeriesNormalize,
+    EmptyMetric, InstantManipulate, Millisecond, RangeManipulate, SeriesDivide, SeriesNormalize,
 };
 <span class="kw">use </span><span class="kw">crate</span>::functions::{IDelta, Increase};
 
 <span class="kw">const </span>LEFT_PLAN_JOIN_ALIAS: <span class="kw-2">&amp;</span>str = <span class="string">&quot;lhs&quot;</span>;
+
+<span class="doccomment">/// `time()` function in PromQL.
+</span><span class="kw">const </span>SPECIAL_TIME_FUNCTION: <span class="kw-2">&amp;</span>str = <span class="string">&quot;time&quot;</span>;
+
+<span class="doccomment">/// default value column name for empty metric
+</span><span class="kw">const </span>DEFAULT_VALUE_COLUMN: <span class="kw-2">&amp;</span>str = <span class="string">&quot;value&quot;</span>;
 
 <span class="attr">#[derive(Default, Debug, Clone)]
 </span><span class="kw">struct </span>PromPlannerContext {
@@ -1922,6 +1954,26 @@
                 })
             }
             PromExpr::Call(Call { func, args }) =&gt; {
+                <span class="comment">// TODO(ruihang): refactor this, transform the AST in advance to include an empty metric table.
+                </span><span class="kw">if </span>func.name == SPECIAL_TIME_FUNCTION {
+                    <span class="self">self</span>.ctx.time_index_column = <span class="prelude-val">Some</span>(SPECIAL_TIME_FUNCTION.to_string());
+                    <span class="self">self</span>.ctx.value_columns = <span class="macro">vec!</span>[DEFAULT_VALUE_COLUMN.to_string()];
+                    <span class="self">self</span>.ctx.table_name = <span class="prelude-val">Some</span>(String::new());
+
+                    <span class="kw">return </span><span class="prelude-val">Ok</span>(LogicalPlan::Extension(Extension {
+                        node: Arc::new(
+                            EmptyMetric::new(
+                                <span class="self">self</span>.ctx.start,
+                                <span class="self">self</span>.ctx.end,
+                                <span class="self">self</span>.ctx.interval,
+                                SPECIAL_TIME_FUNCTION.to_string(),
+                                DEFAULT_VALUE_COLUMN.to_string(),
+                            )
+                            .context(DataFusionPlanningSnafu)<span class="question-mark">?</span>,
+                        ),
+                    }));
+                }
+
                 <span class="kw">let </span>args = <span class="self">self</span>.create_function_args(<span class="kw-2">&amp;</span>args.args)<span class="question-mark">?</span>;
                 <span class="kw">let </span>input = <span class="self">self
                     </span>.prom_expr_to_plan(args.input.with_context(|| ExpectExprSnafu {

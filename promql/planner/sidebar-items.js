@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"constant":["LEFT_PLAN_JOIN_ALIAS"],"enum":["ScalarFunc"],"opaque":[""],"struct":["FunctionArgs","PromPlanner","PromPlannerContext"]};
+window.SIDEBAR_ITEMS = {"constant":["DEFAULT_VALUE_COLUMN","LEFT_PLAN_JOIN_ALIAS","SPECIAL_TIME_FUNCTION"],"enum":["ScalarFunc"],"opaque":[""],"struct":["FunctionArgs","PromPlanner","PromPlannerContext"]};

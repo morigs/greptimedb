@@ -453,6 +453,10 @@
 <a href="#453" id="453">453</a>
 <a href="#454" id="454">454</a>
 <a href="#455" id="455">455</a>
+<a href="#456" id="456">456</a>
+<a href="#457" id="457">457</a>
+<a href="#458" id="458">458</a>
+<a href="#459" id="459">459</a>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2023 Greptime Team
 //
 // Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -484,6 +488,7 @@
 <span class="kw">use </span>session::context::{QueryContext, QueryContextRef};
 <span class="kw">use </span>snafu::prelude::<span class="kw-2">*</span>;
 <span class="kw">use </span>sql::ast::ObjectName;
+<span class="kw">use </span>sql::statements::copy::CopyTable;
 <span class="kw">use </span>sql::statements::statement::Statement;
 <span class="kw">use </span>sql::statements::tql::Tql;
 <span class="kw">use </span>table::engine::TableReference;
@@ -639,22 +644,25 @@
 
                 <span class="prelude-val">Ok</span>(Output::RecordBatches(RecordBatches::empty()))
             }
-            QueryStatement::Sql(Statement::Copy(copy_table)) =&gt; {
-                <span class="kw">let </span>(catalog_name, schema_name, table_name) =
-                    table_idents_to_full_name(copy_table.table_name(), query_ctx.clone())<span class="question-mark">?</span>;
-                <span class="kw">let </span>file_name = copy_table.file_name().to_string();
+            QueryStatement::Sql(Statement::Copy(copy_table)) =&gt; <span class="kw">match </span>copy_table {
+                CopyTable::To(copy_table) =&gt; {
+                    <span class="kw">let </span>(catalog_name, schema_name, table_name) =
+                        table_idents_to_full_name(copy_table.table_name(), query_ctx.clone())<span class="question-mark">?</span>;
+                    <span class="kw">let </span>file_name = copy_table.file_name().to_string();
 
-                <span class="kw">let </span>req = CopyTableRequest {
-                    catalog_name,
-                    schema_name,
-                    table_name,
-                    file_name,
-                };
+                    <span class="kw">let </span>req = CopyTableRequest {
+                        catalog_name,
+                        schema_name,
+                        table_name,
+                        file_name,
+                    };
 
-                <span class="self">self</span>.sql_handler
-                    .execute(SqlRequest::CopyTable(req), query_ctx)
-                    .<span class="kw">await
-            </span>}
+                    <span class="self">self</span>.sql_handler
+                        .execute(SqlRequest::CopyTable(req), query_ctx)
+                        .<span class="kw">await
+                </span>}
+                CopyTable::From(<span class="kw">_</span>) =&gt; <span class="macro">todo!</span>(),
+            },
             QueryStatement::Sql(Statement::Tql(tql)) =&gt; <span class="self">self</span>.execute_tql(tql, query_ctx).<span class="kw">await</span>,
         }
     }

@@ -36,7 +36,7 @@
 ) -&gt; <a class="type" href="../error/type.Result.html" title="type datanode::error::Result">Result</a>&lt;<a class="enum" href="enum.SqlRequest.html" title="enum datanode::sql::SqlRequest">SqlRequest</a>&gt;</h4></section><section id="method.build_request_from_batch" class="method"><a class="srclink rightside" href="../../src/datanode/sql/insert.rs.html#144-223">source</a><h4 class="code-header">fn <a href="#method.build_request_from_batch" class="fn">build_request_from_batch</a>(
     stmt: Insert,
     table: TableRef,
-    batch: RecordBatch,
+    batch: <a class="struct" href="../../common_recordbatch/recordbatch/struct.RecordBatch.html" title="struct common_recordbatch::recordbatch::RecordBatch">RecordBatch</a>,
     query_ctx: <a class="type" href="../../session/context/type.QueryContextRef.html" title="type session::context::QueryContextRef">QueryContextRef</a>
 ) -&gt; <a class="type" href="../error/type.Result.html" title="type datanode::error::Result">Result</a>&lt;<a class="enum" href="enum.SqlRequest.html" title="enum datanode::sql::SqlRequest">SqlRequest</a>&gt;</h4></section><section id="method.build_stream_from_query" class="method"><a class="srclink rightside" href="../../src/datanode/sql/insert.rs.html#226-276">source</a><h4 class="code-header">async fn <a href="#method.build_stream_from_query" class="fn">build_stream_from_query</a>(
     &amp;self,

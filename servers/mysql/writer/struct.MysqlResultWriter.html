@@ -9,7 +9,7 @@
     writer: QueryResultWriter&lt;'a, W&gt;
 ) -&gt; <a class="type" href="../../error/type.Result.html" title="type servers::error::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>&gt;</h4></section><section id="method.write_recordbatch" class="method"><a class="srclink rightside" href="../../../src/servers/mysql/writer.rs.html#106-146">source</a><h4 class="code-header">async fn <a href="#method.write_recordbatch" class="fn">write_recordbatch</a>(
     row_writer: &amp;mut RowWriter&lt;'_, W&gt;,
-    recordbatch: &amp;RecordBatch
+    recordbatch: &amp;<a class="struct" href="../../../common_recordbatch/recordbatch/struct.RecordBatch.html" title="struct common_recordbatch::recordbatch::RecordBatch">RecordBatch</a>
 ) -&gt; <a class="type" href="../../error/type.Result.html" title="type servers::error::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>&gt;</h4></section><section id="method.write_query_error" class="method"><a class="srclink rightside" href="../../../src/servers/mysql/writer.rs.html#148-158">source</a><h4 class="code-header">async fn <a href="#method.write_query_error" class="fn">write_query_error</a>(
     query: &amp;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.str.html">str</a>,
     error: <a class="enum" href="../../error/enum.Error.html" title="enum servers::error::Error">Error</a>,

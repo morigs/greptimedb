@@ -26,6 +26,8 @@
 <a href="#26" id="26">26</a>
 <a href="#27" id="27">27</a>
 <a href="#28" id="28">28</a>
+<a href="#29" id="29">29</a>
+<a href="#30" id="30">30</a>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2023 Greptime Team
 //
 // Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -40,13 +42,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-</span><span class="kw">mod </span>instant_manipulate;
+</span><span class="kw">mod </span>empty_metric;
+<span class="kw">mod </span>instant_manipulate;
 <span class="kw">mod </span>normalize;
 <span class="kw">mod </span>planner;
 <span class="kw">mod </span>range_manipulate;
 <span class="kw">mod </span>series_divide;
 
 <span class="kw">use </span>datafusion::arrow::datatypes::{ArrowPrimitiveType, TimestampMillisecondType};
+<span class="kw">pub use </span>empty_metric::{EmptyMetric, EmptyMetricExec, EmptyMetricStream};
 <span class="kw">pub use </span>instant_manipulate::{InstantManipulate, InstantManipulateExec, InstantManipulateStream};
 <span class="kw">pub use </span>normalize::{SeriesNormalize, SeriesNormalizeExec, SeriesNormalizeStream};
 <span class="kw">pub use </span>planner::PromExtensionPlanner;

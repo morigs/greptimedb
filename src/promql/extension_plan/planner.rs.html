@@ -49,6 +49,9 @@
 <a href="#49" id="49">49</a>
 <a href="#50" id="50">50</a>
 <a href="#51" id="51">51</a>
+<a href="#52" id="52">52</a>
+<a href="#53" id="53">53</a>
+<a href="#54" id="54">54</a>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2023 Greptime Team
 //
 // Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -72,8 +75,9 @@
 <span class="kw">use </span>datafusion::physical_plan::planner::ExtensionPlanner;
 <span class="kw">use </span>datafusion::physical_plan::{ExecutionPlan, PhysicalPlanner};
 
-<span class="kw">use super</span>::{InstantManipulate, RangeManipulate, SeriesDivide};
-<span class="kw">use </span><span class="kw">crate</span>::extension_plan::SeriesNormalize;
+<span class="kw">use </span><span class="kw">crate</span>::extension_plan::{
+    EmptyMetric, InstantManipulate, RangeManipulate, SeriesDivide, SeriesNormalize,
+};
 
 <span class="kw">pub struct </span>PromExtensionPlanner {}
 
@@ -95,6 +99,8 @@
             <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(node.to_execution_plan(physical_inputs[<span class="number">0</span>].clone())))
         } <span class="kw">else if let </span><span class="prelude-val">Some</span>(node) = node.as_any().downcast_ref::&lt;SeriesDivide&gt;() {
             <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(node.to_execution_plan(physical_inputs[<span class="number">0</span>].clone())))
+        } <span class="kw">else if let </span><span class="prelude-val">Some</span>(node) = node.as_any().downcast_ref::&lt;EmptyMetric&gt;() {
+            <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(node.to_execution_plan()))
         } <span class="kw">else </span>{
             <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>)
         }
