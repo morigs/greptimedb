@@ -790,7 +790,6 @@
 <a href="#790" id="790">790</a>
 <a href="#791" id="791">791</a>
 <a href="#792" id="792">792</a>
-<a href="#793" id="793">793</a>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2023 Greptime Team
 //
 // Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -908,7 +907,6 @@
                     <span class="kw">yield </span><span class="prelude-val">Ok</span>(key)
                 } <span class="kw">else </span>{
                     <span class="macro">error!</span>(<span class="string">&quot;Invalid catalog key: {:?}&quot;</span>, catalog_key);
-                    <span class="kw">continue</span>;
                 }
             }
         }))

@@ -1,4 +1,4 @@
 (function() {var implementors = {
-"datanode":[["impl ScriptHandler for <a class=\"struct\" href=\"datanode/instance/struct.Instance.html\" title=\"struct datanode::instance::Instance\">Instance</a>"]],
-"frontend":[["impl ScriptHandler for <a class=\"struct\" href=\"frontend/instance/struct.Instance.html\" title=\"struct frontend::instance::Instance\">Instance</a>"]]
+"datanode":[["impl <a class=\"trait\" href=\"servers/query_handler/trait.ScriptHandler.html\" title=\"trait servers::query_handler::ScriptHandler\">ScriptHandler</a> for <a class=\"struct\" href=\"datanode/instance/struct.Instance.html\" title=\"struct datanode::instance::Instance\">Instance</a>"]],
+"frontend":[["impl <a class=\"trait\" href=\"servers/query_handler/trait.ScriptHandler.html\" title=\"trait servers::query_handler::ScriptHandler\">ScriptHandler</a> for <a class=\"struct\" href=\"frontend/instance/struct.Instance.html\" title=\"struct frontend::instance::Instance\">Instance</a>"]]
 };if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
