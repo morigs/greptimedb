@@ -375,6 +375,9 @@
 <a href="#375" id="375">375</a>
 <a href="#376" id="376">376</a>
 <a href="#377" id="377">377</a>
+<a href="#378" id="378">378</a>
+<a href="#379" id="379">379</a>
+<a href="#380" id="380">380</a>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2023 Greptime Team
 //
 // Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -528,15 +531,18 @@
             <span class="kw-2">&amp;</span><span class="self">self</span>.data.request.schema_name,
             <span class="self">self</span>.data.request.id,
         );
+        <span class="kw">let </span>table_options = <span class="kw-2">&amp;</span><span class="self">self</span>.data.request.table_options;
+        <span class="kw">let </span>write_buffer_size = table_options.write_buffer_size.map(|size| size.<span class="number">0 </span><span class="kw">as </span>usize);
+        <span class="kw">let </span>ttl = table_options.ttl;
         <span class="kw">let </span>open_opts = OpenOptions {
             parent_dir: table_dir.clone(),
-            write_buffer_size: <span class="prelude-val">None</span>,
-            ttl: <span class="prelude-val">None</span>,
+            write_buffer_size,
+            ttl,
         };
         <span class="kw">let </span>create_opts = CreateOptions {
             parent_dir: table_dir,
-            write_buffer_size: <span class="prelude-val">None</span>,
-            ttl: <span class="prelude-val">None</span>,
+            write_buffer_size,
+            ttl,
         };
 
         <span class="kw">let </span>table_schema =

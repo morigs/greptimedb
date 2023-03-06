@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"constant":["CELL","DOC","MODULE_NAME"],"fn":["__getit","__init","col","extend_module","make_module","set_dataframe_in_scope"],"static":["CELL","__KEY"],"struct":["PyDataFrame","PyExpr"],"type":["PyExprRef"]};
+window.SIDEBAR_ITEMS = {"constant":["CELL","DOC","MODULE_NAME"],"fn":["__getit","__init","extend_module","make_module","set_dataframe_in_scope"],"static":["CELL","__KEY"],"struct":["PyDataFrame","PyExpr"],"type":["PyExprRef"]};

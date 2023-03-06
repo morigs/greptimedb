@@ -405,7 +405,7 @@
 <span class="kw">use </span>rand::Rng;
 <span class="kw">use </span>servers::grpc::GrpcServer;
 <span class="kw">use </span>servers::http::{HttpOptions, HttpServer};
-<span class="kw">use </span>servers::promql::PromqlServer;
+<span class="kw">use </span>servers::prom::PromServer;
 <span class="kw">use </span>servers::query_handler::grpc::ServerGrpcQueryHandlerAdaptor;
 <span class="kw">use </span>servers::query_handler::sql::ServerSqlQueryHandlerAdaptor;
 <span class="kw">use </span>servers::server::Server;
@@ -672,7 +672,7 @@
     (app, guard)
 }
 
-<span class="kw">pub async fn </span>setup_test_promql_app_with_frontend(
+<span class="kw">pub async fn </span>setup_test_prom_app_with_frontend(
     store_type: StorageType,
     name: <span class="kw-2">&amp;</span>str,
 ) -&gt; (Router, TestGuard) {
@@ -687,8 +687,8 @@
     )
     .<span class="kw">await
     </span>.unwrap();
-    <span class="kw">let </span>promql_server = PromqlServer::create_server(Arc::new(frontend) <span class="kw">as _</span>);
-    <span class="kw">let </span>app = promql_server.make_app();
+    <span class="kw">let </span>prom_server = PromServer::create_server(Arc::new(frontend) <span class="kw">as _</span>);
+    <span class="kw">let </span>app = prom_server.make_app();
     (app, guard)
 }
 

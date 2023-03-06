@@ -139,8 +139,8 @@
 <span class="kw">use </span><span class="kw">crate</span>::mysql::MysqlOptions;
 <span class="kw">use </span><span class="kw">crate</span>::opentsdb::OpentsdbOptions;
 <span class="kw">use </span><span class="kw">crate</span>::postgres::PostgresOptions;
+<span class="kw">use </span><span class="kw">crate</span>::prom::PromOptions;
 <span class="kw">use </span><span class="kw">crate</span>::prometheus::PrometheusOptions;
-<span class="kw">use </span><span class="kw">crate</span>::promql::PromqlOptions;
 <span class="kw">use </span><span class="kw">crate</span>::server::Services;
 
 <span class="attr">#[derive(Clone, Debug, Serialize, Deserialize)]
@@ -154,7 +154,7 @@
     <span class="kw">pub </span>opentsdb_options: <span class="prelude-ty">Option</span>&lt;OpentsdbOptions&gt;,
     <span class="kw">pub </span>influxdb_options: <span class="prelude-ty">Option</span>&lt;InfluxdbOptions&gt;,
     <span class="kw">pub </span>prometheus_options: <span class="prelude-ty">Option</span>&lt;PrometheusOptions&gt;,
-    <span class="kw">pub </span>promql_options: <span class="prelude-ty">Option</span>&lt;PromqlOptions&gt;,
+    <span class="kw">pub </span>prom_options: <span class="prelude-ty">Option</span>&lt;PromOptions&gt;,
     <span class="kw">pub </span>meta_client_options: <span class="prelude-ty">Option</span>&lt;MetaClientOptions&gt;,
 }
 
@@ -169,7 +169,7 @@
             opentsdb_options: <span class="prelude-val">Some</span>(OpentsdbOptions::default()),
             influxdb_options: <span class="prelude-val">Some</span>(InfluxdbOptions::default()),
             prometheus_options: <span class="prelude-val">Some</span>(PrometheusOptions::default()),
-            promql_options: <span class="prelude-val">Some</span>(PromqlOptions::default()),
+            prom_options: <span class="prelude-val">Some</span>(PromOptions::default()),
             meta_client_options: <span class="prelude-val">None</span>,
         }
     }

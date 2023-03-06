@@ -484,6 +484,22 @@
 <a href="#484" id="484">484</a>
 <a href="#485" id="485">485</a>
 <a href="#486" id="486">486</a>
+<a href="#487" id="487">487</a>
+<a href="#488" id="488">488</a>
+<a href="#489" id="489">489</a>
+<a href="#490" id="490">490</a>
+<a href="#491" id="491">491</a>
+<a href="#492" id="492">492</a>
+<a href="#493" id="493">493</a>
+<a href="#494" id="494">494</a>
+<a href="#495" id="495">495</a>
+<a href="#496" id="496">496</a>
+<a href="#497" id="497">497</a>
+<a href="#498" id="498">498</a>
+<a href="#499" id="499">499</a>
+<a href="#500" id="500">500</a>
+<a href="#501" id="501">501</a>
+<a href="#502" id="502">502</a>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2023 Greptime Team
 //
 // Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -705,7 +721,7 @@
         .iter()
         .map(|name| {
             <span class="kw">let </span>vector = rb.column_by_name(name).with_context(|| OtherSnafu {
-                reason: <span class="macro">format!</span>(<span class="string">&quot;Can&#39;t find field name {name}&quot;</span>),
+                reason: <span class="macro">format!</span>(<span class="string">&quot;Can&#39;t find field name {name} in all columns in {rb:?}&quot;</span>),
             })<span class="question-mark">?</span>;
             <span class="prelude-val">Ok</span>(PyVector::from(vector.clone()))
         })
@@ -715,15 +731,29 @@
 <span class="doccomment">/// match between arguments&#39; real type and annotation types
 /// if type anno is `vector[_]` then use real type(from RecordBatch&#39;s schema)
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>check_args_anno_real_type(
+    arg_names: <span class="kw-2">&amp;</span>[String],
     args: <span class="kw-2">&amp;</span>[PyVector],
     copr: <span class="kw-2">&amp;</span>Coprocessor,
     rb: <span class="kw-2">&amp;</span>RecordBatch,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="macro">ensure!</span>(
+        arg_names.len() == args.len(),
+        OtherSnafu {
+            reason: <span class="macro">format!</span>(<span class="string">&quot;arg_names:{arg_names:?} and args{args:?}&#39;s length is different&quot;</span>)
+        }
+    );
     <span class="kw">for </span>(idx, arg) <span class="kw">in </span>args.iter().enumerate() {
         <span class="kw">let </span>anno_ty = copr.arg_types[idx].clone();
         <span class="kw">let </span>real_ty = arg.to_arrow_array().data_type().clone();
         <span class="kw">let </span>real_ty = ConcreteDataType::from_arrow_type(<span class="kw-2">&amp;</span>real_ty);
-        <span class="kw">let </span>is_nullable: bool = rb.schema.column_schemas()[idx].is_nullable();
+        <span class="kw">let </span>arg_name = arg_names[idx].clone();
+        <span class="kw">let </span>col_idx = rb.schema.column_index_by_name(<span class="kw-2">&amp;</span>arg_name).ok_or(
+            OtherSnafu {
+                reason: <span class="macro">format!</span>(<span class="string">&quot;Can&#39;t find column by name {arg_name}&quot;</span>),
+            }
+            .build(),
+        )<span class="question-mark">?</span>;
+        <span class="kw">let </span>is_nullable: bool = rb.schema.column_schemas()[col_idx].is_nullable();
         <span class="macro">ensure!</span>(
             anno_ty
                 .clone()
@@ -910,11 +940,13 @@
                 pyo3_exec_parsed(copr, rb, params)
             }
             <span class="attr">#[cfg(not(feature = <span class="string">&quot;pyo3_backend&quot;</span>))]
-            </span>OtherSnafu {
-                reason: <span class="string">&quot;`pyo3` feature is disabled, therefore can&#39;t run scripts in cpython&quot;
-                    </span>.to_string(),
+            </span>{
+                OtherSnafu {
+                    reason: <span class="string">&quot;`pyo3` feature is disabled, therefore can&#39;t run scripts in cpython&quot;
+                        </span>.to_string(),
+                }
+                .fail()
             }
-            .fail()
         }
     }
 }

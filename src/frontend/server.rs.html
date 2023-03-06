@@ -250,7 +250,7 @@
 <span class="kw">use </span>servers::mysql::server::{MysqlServer, MysqlSpawnConfig, MysqlSpawnRef};
 <span class="kw">use </span>servers::opentsdb::OpentsdbServer;
 <span class="kw">use </span>servers::postgres::PostgresServer;
-<span class="kw">use </span>servers::promql::PromqlServer;
+<span class="kw">use </span>servers::prom::PromServer;
 <span class="kw">use </span>servers::query_handler::grpc::ServerGrpcQueryHandlerAdaptor;
 <span class="kw">use </span>servers::query_handler::sql::ServerSqlQueryHandlerAdaptor;
 <span class="kw">use </span>servers::server::Server;
@@ -408,15 +408,15 @@
             <span class="prelude-val">None
         </span>};
 
-        <span class="kw">let </span>promql_server_and_addr = <span class="kw">if let </span><span class="prelude-val">Some</span>(promql_options) = <span class="kw-2">&amp;</span>opts.promql_options {
-            <span class="kw">let </span>promql_addr = parse_addr(<span class="kw-2">&amp;</span>promql_options.addr)<span class="question-mark">?</span>;
+        <span class="kw">let </span>prom_server_and_addr = <span class="kw">if let </span><span class="prelude-val">Some</span>(prom_options) = <span class="kw-2">&amp;</span>opts.prom_options {
+            <span class="kw">let </span>prom_addr = parse_addr(<span class="kw-2">&amp;</span>prom_options.addr)<span class="question-mark">?</span>;
 
-            <span class="kw">let </span><span class="kw-2">mut </span>promql_server = PromqlServer::create_server(instance.clone());
+            <span class="kw">let </span><span class="kw-2">mut </span>prom_server = PromServer::create_server(instance.clone());
             <span class="kw">if let </span><span class="prelude-val">Some</span>(user_provider) = user_provider {
-                promql_server.set_user_provider(user_provider);
+                prom_server.set_user_provider(user_provider);
             }
 
-            <span class="prelude-val">Some</span>((promql_server <span class="kw">as _</span>, promql_addr))
+            <span class="prelude-val">Some</span>((prom_server <span class="kw">as _</span>, prom_addr))
         } <span class="kw">else </span>{
             <span class="prelude-val">None
         </span>};
@@ -427,7 +427,7 @@
             start_server(mysql_server_and_addr),
             start_server(postgres_server_and_addr),
             start_server(opentsdb_server_and_addr),
-            start_server(promql_server_and_addr),
+            start_server(prom_server_and_addr),
         )
         .context(error::StartServerSnafu)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())

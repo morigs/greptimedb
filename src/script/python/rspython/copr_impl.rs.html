@@ -218,6 +218,7 @@
 <a href="#218" id="218">218</a>
 <a href="#219" id="219">219</a>
 <a href="#220" id="220">220</a>
+<a href="#221" id="221">221</a>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2023 Greptime Team
 //
 // Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -253,7 +254,7 @@
 <span class="kw">use </span><span class="kw">crate</span>::python::rspython::builtins::init_greptime_builtins;
 <span class="kw">use </span><span class="kw">crate</span>::python::rspython::dataframe_impl::data_frame::set_dataframe_in_scope;
 <span class="kw">use </span><span class="kw">crate</span>::python::rspython::dataframe_impl::init_data_frame;
-<span class="kw">use </span><span class="kw">crate</span>::python::rspython::utils::{format_py_error, is_instance, py_vec_obj_to_array};
+<span class="kw">use </span><span class="kw">crate</span>::python::rspython::utils::{format_py_error, is_instance, py_obj_to_vec};
 
 <span class="macro">thread_local!</span>(<span class="kw">static </span>INTERPRETER: RefCell&lt;<span class="prelude-ty">Option</span>&lt;Arc&lt;Interpreter&gt;&gt;&gt; = RefCell::new(<span class="prelude-val">None</span>));
 
@@ -265,8 +266,9 @@
 ) -&gt; <span class="prelude-ty">Result</span>&lt;RecordBatch&gt; {
     <span class="comment">// 3. get args from `rb`, and cast them into PyVector
     </span><span class="kw">let </span>args: Vec&lt;PyVector&gt; = <span class="kw">if let </span><span class="prelude-val">Some</span>(rb) = rb {
-        <span class="kw">let </span>args = select_from_rb(rb, copr.deco_args.arg_names.as_ref().unwrap_or(<span class="kw-2">&amp;</span><span class="macro">vec!</span>[]))<span class="question-mark">?</span>;
-        check_args_anno_real_type(<span class="kw-2">&amp;</span>args, copr, rb)<span class="question-mark">?</span>;
+        <span class="kw">let </span>arg_names = copr.deco_args.arg_names.clone().unwrap_or(<span class="macro">vec!</span>[]);
+        <span class="kw">let </span>args = select_from_rb(rb, <span class="kw-2">&amp;</span>arg_names)<span class="question-mark">?</span>;
+        check_args_anno_real_type(<span class="kw-2">&amp;</span>arg_names, <span class="kw-2">&amp;</span>args, copr, rb)<span class="question-mark">?</span>;
         args
     } <span class="kw">else </span>{
         <span class="macro">vec!</span>[]
@@ -378,7 +380,7 @@
 }
 
 <span class="doccomment">/// convert a tuple of `PyVector` or one `PyVector`(wrapped in a Python Object Ref[`PyObjectRef`])
-/// to a `Vec&lt;ArrayRef&gt;`
+/// to a `Vec&lt;VectorRef&gt;`
 /// by default, a constant(int/float/bool) gives the a constant array of same length with input args
 </span><span class="kw">fn </span>try_into_columns(
     obj: <span class="kw-2">&amp;</span>PyObjectRef,
@@ -391,11 +393,11 @@
             .with_context(|| ret_other_error_with(<span class="macro">format!</span>(<span class="string">&quot;can&#39;t cast obj {obj:?} to PyTuple)&quot;</span>)))<span class="question-mark">?</span>;
         <span class="kw">let </span>cols = tuple
             .iter()
-            .map(|obj| py_vec_obj_to_array(obj, vm, col_len))
+            .map(|obj| py_obj_to_vec(obj, vm, col_len))
             .collect::&lt;<span class="prelude-ty">Result</span>&lt;Vec&lt;VectorRef&gt;&gt;&gt;()<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(cols)
     } <span class="kw">else </span>{
-        <span class="kw">let </span>col = py_vec_obj_to_array(obj, vm, col_len)<span class="question-mark">?</span>;
+        <span class="kw">let </span>col = py_obj_to_vec(obj, vm, col_len)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(<span class="macro">vec!</span>[col])
     }
 }

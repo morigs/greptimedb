@@ -504,6 +504,42 @@
 <a href="#504" id="504">504</a>
 <a href="#505" id="505">505</a>
 <a href="#506" id="506">506</a>
+<a href="#507" id="507">507</a>
+<a href="#508" id="508">508</a>
+<a href="#509" id="509">509</a>
+<a href="#510" id="510">510</a>
+<a href="#511" id="511">511</a>
+<a href="#512" id="512">512</a>
+<a href="#513" id="513">513</a>
+<a href="#514" id="514">514</a>
+<a href="#515" id="515">515</a>
+<a href="#516" id="516">516</a>
+<a href="#517" id="517">517</a>
+<a href="#518" id="518">518</a>
+<a href="#519" id="519">519</a>
+<a href="#520" id="520">520</a>
+<a href="#521" id="521">521</a>
+<a href="#522" id="522">522</a>
+<a href="#523" id="523">523</a>
+<a href="#524" id="524">524</a>
+<a href="#525" id="525">525</a>
+<a href="#526" id="526">526</a>
+<a href="#527" id="527">527</a>
+<a href="#528" id="528">528</a>
+<a href="#529" id="529">529</a>
+<a href="#530" id="530">530</a>
+<a href="#531" id="531">531</a>
+<a href="#532" id="532">532</a>
+<a href="#533" id="533">533</a>
+<a href="#534" id="534">534</a>
+<a href="#535" id="535">535</a>
+<a href="#536" id="536">536</a>
+<a href="#537" id="537">537</a>
+<a href="#538" id="538">538</a>
+<a href="#539" id="539">539</a>
+<a href="#540" id="540">540</a>
+<a href="#541" id="541">541</a>
+<a href="#542" id="542">542</a>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2023 Greptime Team
 //
 // Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -536,7 +572,7 @@
     RecordBatch, RecordBatchStream, RecordBatches, SendableRecordBatchStream,
 };
 <span class="kw">use </span>datafusion_expr::Volatility;
-<span class="kw">use </span>datatypes::schema::{ColumnSchema, SchemaRef};
+<span class="kw">use </span>datatypes::schema::{ColumnSchema, Schema, SchemaRef};
 <span class="kw">use </span>datatypes::vectors::VectorRef;
 <span class="kw">use </span>futures::Stream;
 <span class="kw">use </span>query::parser::{QueryLanguageParser, QueryStatement};
@@ -546,9 +582,8 @@
 <span class="kw">use </span>sql::statements::statement::Statement;
 
 <span class="kw">use </span><span class="kw">crate</span>::engine::{CompileContext, EvalContext, Script, ScriptEngine};
-<span class="kw">use </span><span class="kw">crate</span>::python::error::{<span class="self">self</span>, <span class="prelude-ty">Result</span>};
+<span class="kw">use </span><span class="kw">crate</span>::python::error::{<span class="self">self</span>, PyRuntimeSnafu, <span class="prelude-ty">Result</span>};
 <span class="kw">use </span><span class="kw">crate</span>::python::ffi_types::copr::{exec_parsed, parse, AnnotationInfo, CoprocessorRef};
-
 <span class="kw">const </span>PY_ENGINE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;python&quot;</span>;
 
 <span class="attr">#[derive(Debug)]
@@ -587,17 +622,21 @@
 
     <span class="doccomment">/// Fake a schema, should only be used with dynamically eval a Python Udf
     </span><span class="kw">fn </span>fake_schema(<span class="kw-2">&amp;</span><span class="self">self</span>, columns: <span class="kw-2">&amp;</span>[VectorRef]) -&gt; SchemaRef {
-        <span class="kw">let </span>empty_args = <span class="macro">vec!</span>[];
-        <span class="kw">let </span>arg_names = <span class="self">self
-            </span>.copr
-            .deco_args
-            .arg_names
-            .as_ref()
-            .unwrap_or(<span class="kw-2">&amp;</span>empty_args);
+        <span class="comment">// try to give schema right names in args so script can run as UDF without modify
+        // because when running as PyUDF, the incoming columns should have matching names to make sense
+        // for Coprocessor
+        </span><span class="kw">let </span>args = <span class="self">self</span>.copr.deco_args.arg_names.clone();
+        <span class="kw">let </span>try_get_name = |i: usize| {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(arg_name) = args.as_ref().and_then(|args| args.get(i)) {
+                arg_name.clone()
+            } <span class="kw">else </span>{
+                <span class="macro">format!</span>(<span class="string">&quot;name_{i}&quot;</span>)
+            }
+        };
         <span class="kw">let </span>col_sch: Vec&lt;<span class="kw">_</span>&gt; = columns
             .iter()
             .enumerate()
-            .map(|(i, col)| ColumnSchema::new(arg_names[i].clone(), col.data_type(), <span class="bool-val">true</span>))
+            .map(|(i, col)| ColumnSchema::new(try_get_name(i), col.data_type(), <span class="bool-val">true</span>))
             .collect();
         <span class="kw">let </span>schema = datatypes::schema::Schema::new(col_sch);
         Arc::new(schema)
@@ -678,7 +717,7 @@
 
 <span class="kw">pub struct </span>PyScript {
     query_engine: QueryEngineRef,
-    copr: CoprocessorRef,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) copr: CoprocessorRef,
 }
 
 <span class="kw">impl </span>PyScript {
@@ -694,12 +733,48 @@
 <span class="kw">pub struct </span>CoprStream {
     stream: SendableRecordBatchStream,
     copr: CoprocessorRef,
+    ret_schema: SchemaRef,
     params: HashMap&lt;String, String&gt;,
+}
+
+<span class="kw">impl </span>CoprStream {
+    <span class="kw">fn </span>try_new(
+        stream: SendableRecordBatchStream,
+        copr: CoprocessorRef,
+        params: HashMap&lt;String, String&gt;,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>schema = <span class="macro">vec!</span>[];
+        <span class="kw">for </span>(ty, name) <span class="kw">in </span>copr.return_types.iter().zip(<span class="kw-2">&amp;</span>copr.deco_args.ret_names) {
+            <span class="kw">let </span>ty = ty.clone().ok_or(
+                PyRuntimeSnafu {
+                    msg: <span class="string">&quot;return type not annotated, can&#39;t generate schema&quot;</span>,
+                }
+                .build(),
+            )<span class="question-mark">?</span>;
+            <span class="kw">let </span>is_nullable = ty.is_nullable;
+            <span class="kw">let </span>ty = ty.datatype.ok_or(
+                PyRuntimeSnafu {
+                    msg: <span class="string">&quot;return type not annotated, can&#39;t generate schema&quot;</span>,
+                }
+                .build(),
+            )<span class="question-mark">?</span>;
+            <span class="kw">let </span>col_schema = ColumnSchema::new(name, ty, is_nullable);
+            schema.push(col_schema);
+        }
+        <span class="kw">let </span>ret_schema = Arc::new(Schema::new(schema));
+        <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
+            stream,
+            copr,
+            ret_schema,
+            params,
+        })
+    }
 }
 
 <span class="kw">impl </span>RecordBatchStream <span class="kw">for </span>CoprStream {
     <span class="kw">fn </span>schema(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; SchemaRef {
-        <span class="self">self</span>.stream.schema()
+        <span class="comment">// FIXME(discord9): use copr returns for schema
+        </span><span class="self">self</span>.ret_schema.clone()
     }
 }
 
@@ -713,7 +788,6 @@
                 <span class="kw">let </span>batch = exec_parsed(<span class="kw-2">&amp;</span><span class="self">self</span>.copr, <span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(recordbatch), <span class="kw-2">&amp;</span><span class="self">self</span>.params)
                     .map_err(BoxedError::new)
                     .context(ExternalSnafu)<span class="question-mark">?</span>;
-
                 Poll::Ready(<span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(batch)))
             }
             Poll::Ready(other) =&gt; Poll::Ready(other),
@@ -752,11 +826,9 @@
             <span class="kw">let </span>res = <span class="self">self</span>.query_engine.execute(<span class="kw-2">&amp;</span>plan).<span class="kw">await</span><span class="question-mark">?</span>;
             <span class="kw">let </span>copr = <span class="self">self</span>.copr.clone();
             <span class="kw">match </span>res {
-                Output::Stream(stream) =&gt; <span class="prelude-val">Ok</span>(Output::Stream(Box::pin(CoprStream {
-                    params,
-                    copr,
-                    stream,
-                }))),
+                Output::Stream(stream) =&gt; <span class="prelude-val">Ok</span>(Output::Stream(Box::pin(CoprStream::try_new(
+                    stream, copr, params,
+                )<span class="question-mark">?</span>))),
                 <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(),
             }
         } <span class="kw">else </span>{
@@ -802,7 +874,8 @@
         })
     }
 }
-
+<span class="attr">#[cfg(test)]
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span>tests::sample_script_engine;
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>tests {
     <span class="kw">use </span>catalog::local::{MemoryCatalogProvider, MemorySchemaProvider};
@@ -817,7 +890,7 @@
 
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
-    <span class="kw">fn </span>sample_script_engine() -&gt; PyEngine {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>sample_script_engine() -&gt; PyEngine {
         <span class="kw">let </span>catalog_list = catalog::local::new_memory_catalog_list().unwrap();
 
         <span class="kw">let </span>default_schema = Arc::new(MemorySchemaProvider::new());
@@ -846,7 +919,7 @@
 import greptime as gt
 
 @copr(args=[&quot;number&quot;], returns = [&quot;number&quot;], sql = &quot;select * from numbers&quot;)
-def test(number)-&gt;vector[u32]:
+def test(number) -&gt; vector[u32]:
     return query.sql(&quot;select * from numbers&quot;)[0][0]
 &quot;#</span>;
         <span class="kw">let </span>script = script_engine
@@ -873,7 +946,7 @@ def test(number)-&gt;vector[u32]:
 
         <span class="kw">let </span>script = <span class="string">r#&quot;
 @copr(returns = [&quot;number&quot;])
-def test(**params)-&gt;vector[i64]:
+def test(**params) -&gt; vector[i64]:
     return int(params[&#39;a&#39;]) + int(params[&#39;b&#39;])
 &quot;#</span>;
         <span class="kw">let </span>script = script_engine
@@ -902,11 +975,10 @@ def test(**params)-&gt;vector[i64]:
         <span class="kw">let </span>script_engine = sample_script_engine();
 
         <span class="kw">let </span>script = <span class="string">r#&quot;
-import greptime as gt
-from data_frame import col
+from greptime import col
 
 @copr(args=[&quot;number&quot;], returns = [&quot;number&quot;], sql = &quot;select * from numbers&quot;)
-def test(number)-&gt;vector[u32]:
+def test(number) -&gt; vector[u32]:
     return dataframe.filter(col(&quot;number&quot;)==col(&quot;number&quot;)).collect()[0][0]
 &quot;#</span>;
         <span class="kw">let </span>script = script_engine
@@ -938,7 +1010,7 @@ def add(a, b):
     return a + b;
 
 @copr(args=[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;], returns = [&quot;r&quot;], sql=&quot;select number as a,number as b,number as c from numbers limit 100&quot;)
-def test(a, b, c):
+def test(a, b, c) -&gt; vector[f64]:
     return add(a, b) / g.sqrt(c + 1)
 &quot;#</span>;
         <span class="kw">let </span>script = script_engine
@@ -976,7 +1048,7 @@ def test(a, b, c):
 import greptime as gt
 
 @copr(args=[&quot;number&quot;], returns = [&quot;r&quot;], sql=&quot;select number from numbers limit 100&quot;)
-def test(a):
+def test(a) -&gt; vector[i64]:
     return gt.vector([x for x in a if x % 2 == 0])
 &quot;#</span>;
         <span class="kw">let </span>script = script_engine

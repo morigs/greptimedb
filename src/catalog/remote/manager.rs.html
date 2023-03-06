@@ -790,6 +790,64 @@
 <a href="#790" id="790">790</a>
 <a href="#791" id="791">791</a>
 <a href="#792" id="792">792</a>
+<a href="#793" id="793">793</a>
+<a href="#794" id="794">794</a>
+<a href="#795" id="795">795</a>
+<a href="#796" id="796">796</a>
+<a href="#797" id="797">797</a>
+<a href="#798" id="798">798</a>
+<a href="#799" id="799">799</a>
+<a href="#800" id="800">800</a>
+<a href="#801" id="801">801</a>
+<a href="#802" id="802">802</a>
+<a href="#803" id="803">803</a>
+<a href="#804" id="804">804</a>
+<a href="#805" id="805">805</a>
+<a href="#806" id="806">806</a>
+<a href="#807" id="807">807</a>
+<a href="#808" id="808">808</a>
+<a href="#809" id="809">809</a>
+<a href="#810" id="810">810</a>
+<a href="#811" id="811">811</a>
+<a href="#812" id="812">812</a>
+<a href="#813" id="813">813</a>
+<a href="#814" id="814">814</a>
+<a href="#815" id="815">815</a>
+<a href="#816" id="816">816</a>
+<a href="#817" id="817">817</a>
+<a href="#818" id="818">818</a>
+<a href="#819" id="819">819</a>
+<a href="#820" id="820">820</a>
+<a href="#821" id="821">821</a>
+<a href="#822" id="822">822</a>
+<a href="#823" id="823">823</a>
+<a href="#824" id="824">824</a>
+<a href="#825" id="825">825</a>
+<a href="#826" id="826">826</a>
+<a href="#827" id="827">827</a>
+<a href="#828" id="828">828</a>
+<a href="#829" id="829">829</a>
+<a href="#830" id="830">830</a>
+<a href="#831" id="831">831</a>
+<a href="#832" id="832">832</a>
+<a href="#833" id="833">833</a>
+<a href="#834" id="834">834</a>
+<a href="#835" id="835">835</a>
+<a href="#836" id="836">836</a>
+<a href="#837" id="837">837</a>
+<a href="#838" id="838">838</a>
+<a href="#839" id="839">839</a>
+<a href="#840" id="840">840</a>
+<a href="#841" id="841">841</a>
+<a href="#842" id="842">842</a>
+<a href="#843" id="843">843</a>
+<a href="#844" id="844">844</a>
+<a href="#845" id="845">845</a>
+<a href="#846" id="846">846</a>
+<a href="#847" id="847">847</a>
+<a href="#848" id="848">848</a>
+<a href="#849" id="849">849</a>
+<a href="#850" id="850">850</a>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2023 Greptime Team
 //
 // Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -805,7 +863,7 @@
 // limitations under the License.
 
 </span><span class="kw">use </span>std::any::Any;
-<span class="kw">use </span>std::collections::HashMap;
+<span class="kw">use </span>std::collections::{HashMap, HashSet};
 <span class="kw">use </span>std::pin::Pin;
 <span class="kw">use </span>std::sync::Arc;
 
@@ -814,8 +872,10 @@
 <span class="kw">use </span>async_trait::async_trait;
 <span class="kw">use </span>common_catalog::consts::{DEFAULT_CATALOG_NAME, DEFAULT_SCHEMA_NAME, MIN_USER_TABLE_ID};
 <span class="kw">use </span>common_telemetry::{debug, error, info};
+<span class="kw">use </span>dashmap::DashMap;
 <span class="kw">use </span>futures::Stream;
 <span class="kw">use </span>futures_util::StreamExt;
+<span class="kw">use </span>parking_lot::RwLock;
 <span class="kw">use </span>snafu::{OptionExt, ResultExt};
 <span class="kw">use </span>table::engine::{EngineContext, TableEngineRef};
 <span class="kw">use </span>table::metadata::TableId;
@@ -831,6 +891,7 @@
 <span class="kw">use </span><span class="kw">crate</span>::helper::{
     build_catalog_prefix, build_schema_prefix, build_table_global_prefix, CatalogKey, CatalogValue,
     SchemaKey, SchemaValue, TableGlobalKey, TableGlobalValue, TableRegionalKey, TableRegionalValue,
+    CATALOG_KEY_PREFIX,
 };
 <span class="kw">use </span><span class="kw">crate</span>::remote::{Kv, KvBackendRef};
 <span class="kw">use crate</span>::{
@@ -843,10 +904,9 @@
 </span><span class="kw">pub struct </span>RemoteCatalogManager {
     node_id: u64,
     backend: KvBackendRef,
-    catalogs: Arc&lt;ArcSwap&lt;HashMap&lt;String, CatalogProviderRef&gt;&gt;&gt;,
+    catalogs: Arc&lt;RwLock&lt;DashMap&lt;String, CatalogProviderRef&gt;&gt;&gt;,
     engine: TableEngineRef,
     system_table_requests: Mutex&lt;Vec&lt;RegisterSystemTableRequest&gt;&gt;,
-    mutex: Arc&lt;Mutex&lt;()&gt;&gt;,
 }
 
 <span class="kw">impl </span>RemoteCatalogManager {
@@ -857,7 +917,6 @@
             backend,
             catalogs: Default::default(),
             system_table_requests: Default::default(),
-            mutex: Default::default(),
         }
     }
 
@@ -1178,7 +1237,14 @@
             <span class="string">&quot;Initialized catalogs: {:?}&quot;</span>,
             catalogs.keys().cloned().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;()
         );
-        <span class="self">self</span>.catalogs.store(Arc::new(catalogs));
+
+        {
+            <span class="kw">let </span>self_catalogs = <span class="self">self</span>.catalogs.read();
+            catalogs.into_iter().for_each(|(k, v)| {
+                self_catalogs.insert(k, v);
+            });
+        }
+
         <span class="macro">info!</span>(<span class="string">&quot;Max table id allocated: {}&quot;</span>, max_table_id);
 
         <span class="kw">let </span><span class="kw-2">mut </span>system_table_requests = <span class="self">self</span>.system_table_requests.lock().<span class="kw">await</span>;
@@ -1296,12 +1362,10 @@
     ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;CatalogProviderRef&gt;&gt; {
         <span class="kw">let </span>key = <span class="self">self</span>.build_catalog_key(<span class="kw-2">&amp;</span>name).to_string();
         <span class="kw">let </span>backend = <span class="self">self</span>.backend.clone();
-        <span class="kw">let </span>mutex = <span class="self">self</span>.mutex.clone();
         <span class="kw">let </span>catalogs = <span class="self">self</span>.catalogs.clone();
 
         std::thread::spawn(|| {
             common_runtime::block_on_write(<span class="kw">async move </span>{
-                <span class="kw">let </span>_guard = mutex.lock().<span class="kw">await</span>;
                 backend
                     .set(
                         key.as_bytes(),
@@ -1310,11 +1374,10 @@
                             .context(InvalidCatalogValueSnafu)<span class="question-mark">?</span>,
                     )
                     .<span class="kw">await</span><span class="question-mark">?</span>;
-                <span class="kw">let </span>prev_catalogs = catalogs.load();
-                <span class="kw">let </span><span class="kw-2">mut </span>new_catalogs = HashMap::with_capacity(prev_catalogs.len() + <span class="number">1</span>);
-                new_catalogs.clone_from(<span class="kw-2">&amp;</span>prev_catalogs);
-                <span class="kw">let </span>prev = new_catalogs.insert(name, catalog);
-                catalogs.store(Arc::new(new_catalogs));
+
+                <span class="kw">let </span>catalogs = catalogs.read();
+                <span class="kw">let </span>prev = catalogs.insert(name, catalog.clone());
+
                 <span class="prelude-val">Ok</span>(prev)
             })
         })
@@ -1324,12 +1387,65 @@
 
     <span class="doccomment">/// List all catalogs from metasrv
     </span><span class="kw">fn </span>catalog_names(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;String&gt;&gt; {
-        <span class="prelude-val">Ok</span>(<span class="self">self</span>.catalogs.load().keys().cloned().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;())
+        <span class="kw">let </span>catalogs = <span class="self">self</span>.catalogs.read();
+        <span class="prelude-val">Ok</span>(catalogs.iter().map(|k| k.key().to_string()).collect())
     }
 
     <span class="doccomment">/// Read catalog info of given name from metasrv.
     </span><span class="kw">fn </span>catalog(<span class="kw-2">&amp;</span><span class="self">self</span>, name: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;CatalogProviderRef&gt;&gt; {
-        <span class="prelude-val">Ok</span>(<span class="self">self</span>.catalogs.load().get(name).cloned())
+        {
+            <span class="kw">let </span>catalogs = <span class="self">self</span>.catalogs.read();
+            <span class="kw">let </span>catalog = catalogs.get(name);
+
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(catalog) = catalog {
+                <span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(catalog.clone()));
+            }
+        }
+
+        <span class="kw">let </span>catalogs = <span class="self">self</span>.catalogs.write();
+
+        <span class="kw">let </span>catalog = catalogs.get(name);
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(catalog) = catalog {
+            <span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(catalog.clone()));
+        }
+
+        <span class="comment">// It&#39;s for lack of incremental catalog syncing between datanode and meta. Here we fetch catalog
+        // from meta on demand. This can be removed when incremental catalog syncing is done in datanode.
+
+        </span><span class="kw">let </span>backend = <span class="self">self</span>.backend.clone();
+
+        <span class="kw">let </span>catalogs_from_meta: HashSet&lt;String&gt; = std::thread::spawn(|| {
+            common_runtime::block_on_read(<span class="kw">async move </span>{
+                <span class="kw">let </span><span class="kw-2">mut </span>stream = backend.range(CATALOG_KEY_PREFIX.as_bytes());
+                <span class="kw">let </span><span class="kw-2">mut </span>catalogs = HashSet::new();
+
+                <span class="kw">while let </span><span class="prelude-val">Some</span>(catalog) = stream.next().<span class="kw">await </span>{
+                    <span class="kw">if let </span><span class="prelude-val">Ok</span>(catalog) = catalog {
+                        <span class="kw">let </span>catalog_key = String::from_utf8_lossy(<span class="kw-2">&amp;</span>catalog.<span class="number">0</span>);
+
+                        <span class="kw">if let </span><span class="prelude-val">Ok</span>(key) = CatalogKey::parse(<span class="kw-2">&amp;</span>catalog_key) {
+                            catalogs.insert(key.catalog_name);
+                        }
+                    }
+                }
+
+                catalogs
+            })
+        })
+        .join()
+        .unwrap();
+
+        catalogs.retain(|catalog_name, <span class="kw">_</span>| catalogs_from_meta.get(catalog_name).is_some());
+
+        <span class="kw">for </span>catalog <span class="kw">in </span>catalogs_from_meta {
+            catalogs
+                .entry(catalog.clone())
+                .or_insert(<span class="self">self</span>.new_catalog_provider(<span class="kw-2">&amp;</span>catalog));
+        }
+
+        <span class="kw">let </span>catalog = catalogs.get(name);
+
+        <span class="prelude-val">Ok</span>(catalog.as_deref().cloned())
     }
 }
 

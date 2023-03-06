@@ -1122,6 +1122,25 @@
 <a href="#1122" id="1122">1122</a>
 <a href="#1123" id="1123">1123</a>
 <a href="#1124" id="1124">1124</a>
+<a href="#1125" id="1125">1125</a>
+<a href="#1126" id="1126">1126</a>
+<a href="#1127" id="1127">1127</a>
+<a href="#1128" id="1128">1128</a>
+<a href="#1129" id="1129">1129</a>
+<a href="#1130" id="1130">1130</a>
+<a href="#1131" id="1131">1131</a>
+<a href="#1132" id="1132">1132</a>
+<a href="#1133" id="1133">1133</a>
+<a href="#1134" id="1134">1134</a>
+<a href="#1135" id="1135">1135</a>
+<a href="#1136" id="1136">1136</a>
+<a href="#1137" id="1137">1137</a>
+<a href="#1138" id="1138">1138</a>
+<a href="#1139" id="1139">1139</a>
+<a href="#1140" id="1140">1140</a>
+<a href="#1141" id="1141">1141</a>
+<a href="#1142" id="1142">1142</a>
+<a href="#1143" id="1143">1143</a>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2023 Greptime Team
 //
 // Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -1415,7 +1434,7 @@
     <span class="kw">use </span>common_function::scalars::{Function, FunctionRef, FUNCTION_REGISTRY};
     <span class="kw">use </span>datafusion::arrow::datatypes::DataType <span class="kw">as </span>ArrowDataType;
     <span class="kw">use </span>datafusion::physical_plan::expressions;
-    <span class="kw">use </span>datafusion_expr::ColumnarValue <span class="kw">as </span>DFColValue;
+    <span class="kw">use </span>datafusion_expr::{ColumnarValue <span class="kw">as </span>DFColValue, Expr <span class="kw">as </span>DfExpr};
     <span class="kw">use </span>datafusion_physical_expr::math_expressions;
     <span class="kw">use </span>datatypes::arrow::array::{ArrayRef, Int64Array, NullArray};
     <span class="kw">use </span>datatypes::arrow::error::ArrowError;
@@ -1432,11 +1451,30 @@
     };
     <span class="kw">use </span><span class="kw">crate</span>::python::ffi_types::vector::val_to_pyobj;
     <span class="kw">use </span><span class="kw">crate</span>::python::ffi_types::PyVector;
-    <span class="kw">use </span><span class="kw">crate</span>::python::rspython::utils::{is_instance, py_vec_obj_to_array, PyVectorRef};
+    <span class="kw">use </span><span class="kw">crate</span>::python::rspython::dataframe_impl::data_frame::{PyExpr, PyExprRef};
+    <span class="kw">use </span><span class="kw">crate</span>::python::rspython::utils::{
+        is_instance, py_obj_to_value, py_obj_to_vec, PyVectorRef,
+    };
 
     <span class="attr">#[pyfunction]
     </span><span class="kw">fn </span>vector(args: OptionalArg&lt;PyObjectRef&gt;, vm: <span class="kw-2">&amp;</span>VirtualMachine) -&gt; PyResult&lt;PyVector&gt; {
         PyVector::new(args, vm)
+    }
+
+    <span class="attr">#[pyfunction]
+    </span><span class="kw">fn </span>col(name: String, vm: <span class="kw-2">&amp;</span>VirtualMachine) -&gt; PyExprRef {
+        <span class="kw">let </span>expr: PyExpr = DfExpr::Column(datafusion_common::Column::from_name(name)).into();
+        expr.into_ref(vm)
+    }
+
+    <span class="attr">#[pyfunction]
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>lit(obj: PyObjectRef, vm: <span class="kw-2">&amp;</span>VirtualMachine) -&gt; PyResult&lt;PyExprRef&gt; {
+        <span class="kw">let </span>val = py_obj_to_value(<span class="kw-2">&amp;</span>obj, vm)<span class="question-mark">?</span>;
+        <span class="kw">let </span>scalar_val = val
+            .try_to_scalar_value(<span class="kw-2">&amp;</span>val.data_type())
+            .map_err(|e| vm.new_runtime_error(<span class="macro">format!</span>(<span class="string">&quot;{e}&quot;</span>)))<span class="question-mark">?</span>;
+        <span class="kw">let </span>expr: PyExpr = DfExpr::Literal(scalar_val).into();
+        <span class="prelude-val">Ok</span>(expr.into_ref(vm))
     }
 
     <span class="comment">// the main binding code, due to proc macro things, can&#39;t directly use a simpler macro
@@ -2090,7 +2128,7 @@
                 <span class="kw">let </span>args = FuncArgs::new(<span class="macro">vec!</span>[v.into_pyobject(vm)], KwArgs::default());
                 <span class="kw">let </span>ret = func.invoke(args, vm);
                 <span class="kw">match </span>ret{
-                        <span class="prelude-val">Ok</span>(obj) =&gt; <span class="kw">match </span>py_vec_obj_to_array(<span class="kw-2">&amp;</span>obj, vm, <span class="number">1</span>){
+                        <span class="prelude-val">Ok</span>(obj) =&gt; <span class="kw">match </span>py_obj_to_vec(<span class="kw-2">&amp;</span>obj, vm, <span class="number">1</span>){
                             <span class="prelude-val">Ok</span>(v) =&gt; <span class="kw">if </span>v.len()==<span class="number">1</span>{
                                 <span class="prelude-val">Ok</span>(v)
                             }<span class="kw">else</span>{

@@ -169,6 +169,17 @@
 <a href="#169" id="169">169</a>
 <a href="#170" id="170">170</a>
 <a href="#171" id="171">171</a>
+<a href="#172" id="172">172</a>
+<a href="#173" id="173">173</a>
+<a href="#174" id="174">174</a>
+<a href="#175" id="175">175</a>
+<a href="#176" id="176">176</a>
+<a href="#177" id="177">177</a>
+<a href="#178" id="178">178</a>
+<a href="#179" id="179">179</a>
+<a href="#180" id="180">180</a>
+<a href="#181" id="181">181</a>
+<a href="#182" id="182">182</a>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2023 Greptime Team
 //
 // Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -193,7 +204,7 @@
     CompareAndPutRequest, CompareAndPutResponse, DeleteRangeRequest, DeleteRangeResponse,
     MoveValueRequest, MoveValueResponse, PutRequest, PutResponse, RangeRequest, RangeResponse,
 };
-<span class="kw">use </span>tonic::{Request, Response, Status};
+<span class="kw">use </span>tonic::{Request, Response};
 
 <span class="kw">use </span><span class="kw">crate</span>::metasrv::MetaSrv;
 <span class="kw">use </span><span class="kw">crate</span>::service::GrpcResult;
@@ -214,12 +225,11 @@
         <span class="prelude-val">Ok</span>(Response::new(res))
     }
 
-    <span class="kw">async fn </span>batch_get(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        _request: Request&lt;BatchGetRequest&gt;,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;BatchGetResponse&gt;, Status&gt; {
-        <span class="comment">// TODO(fys): please fix this
-        </span><span class="macro">unimplemented!</span>()
+    <span class="kw">async fn </span>batch_get(<span class="kw-2">&amp;</span><span class="self">self</span>, req: Request&lt;BatchGetRequest&gt;) -&gt; GrpcResult&lt;BatchGetResponse&gt; {
+        <span class="kw">let </span>req = req.into_inner();
+        <span class="kw">let </span>res = <span class="self">self</span>.kv_store().batch_get(req).<span class="kw">await</span><span class="question-mark">?</span>;
+
+        <span class="prelude-val">Ok</span>(Response::new(res))
     }
 
     <span class="kw">async fn </span>batch_put(<span class="kw-2">&amp;</span><span class="self">self</span>, req: Request&lt;BatchPutRequest&gt;) -&gt; GrpcResult&lt;BatchPutResponse&gt; {
@@ -288,6 +298,18 @@
 
         <span class="kw">let </span>req = PutRequest::default();
         <span class="kw">let </span>res = meta_srv.put(req.into_request()).<span class="kw">await</span>;
+
+        <span class="macro">assert!</span>(res.is_ok());
+    }
+
+    <span class="attr">#[tokio::test]
+    </span><span class="kw">async fn </span>test_batch_get() {
+        <span class="kw">let </span>kv_store = Arc::new(MemStore::new());
+
+        <span class="kw">let </span>meta_srv = MetaSrvBuilder::new().kv_store(kv_store).build().<span class="kw">await</span>;
+
+        <span class="kw">let </span>req = BatchGetRequest::default();
+        <span class="kw">let </span>res = meta_srv.batch_get(req.into_request()).<span class="kw">await</span>;
 
         <span class="macro">assert!</span>(res.is_ok());
     }

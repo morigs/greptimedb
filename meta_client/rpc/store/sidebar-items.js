@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["BatchPutRequest","BatchPutResponse","CompareAndPutRequest","CompareAndPutResponse","DeleteRangeRequest","DeleteRangeResponse","MoveValueRequest","MoveValueResponse","PutRequest","PutResponse","RangeRequest","RangeResponse"]};
+window.SIDEBAR_ITEMS = {"struct":["BatchGetRequest","BatchGetResponse","BatchPutRequest","BatchPutResponse","CompareAndPutRequest","CompareAndPutResponse","DeleteRangeRequest","DeleteRangeResponse","MoveValueRequest","MoveValueResponse","PutRequest","PutResponse","RangeRequest","RangeResponse"]};

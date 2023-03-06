@@ -309,6 +309,10 @@
 <a href="#309" id="309">309</a>
 <a href="#310" id="310">310</a>
 <a href="#311" id="311">311</a>
+<a href="#312" id="312">312</a>
+<a href="#313" id="313">313</a>
+<a href="#314" id="314">314</a>
+<a href="#315" id="315">315</a>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2023 Greptime Team
 //
 // Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -338,7 +342,6 @@
 <span class="kw">use </span><span class="kw">crate</span>::error::{match_for_io_error, <span class="prelude-ty">Result</span>};
 <span class="kw">use </span><span class="kw">crate</span>::keys::{StatKey, StatValue, DN_STAT_PREFIX};
 <span class="kw">use </span><span class="kw">crate</span>::metasrv::ElectionRef;
-<span class="kw">use </span><span class="kw">crate</span>::service::store::ext::KvStoreExt;
 <span class="kw">use </span><span class="kw">crate</span>::service::store::kv::ResettableKvStoreRef;
 <span class="kw">use crate</span>::{error, util};
 
@@ -441,7 +444,12 @@
     <span class="comment">// Get kv information from the leader&#39;s in_mem kv store
     </span><span class="kw">pub async fn </span>batch_get(<span class="kw-2">&amp;</span><span class="self">self</span>, keys: Vec&lt;Vec&lt;u8&gt;&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;KeyValue&gt;&gt; {
         <span class="kw">if </span><span class="self">self</span>.is_leader() {
-            <span class="kw">return </span><span class="self">self</span>.in_memory.batch_get(keys).<span class="kw">await</span>;
+            <span class="kw">let </span>request = BatchGetRequest {
+                keys,
+                ..Default::default()
+            };
+
+            <span class="kw">return </span><span class="self">self</span>.in_memory.batch_get(request).<span class="kw">await</span>.map(|resp| resp.kvs);
         }
 
         <span class="kw">let </span>max_retry_count = <span class="self">self</span>.max_retry_count;

@@ -255,6 +255,23 @@
 <a href="#255" id="255">255</a>
 <a href="#256" id="256">256</a>
 <a href="#257" id="257">257</a>
+<a href="#258" id="258">258</a>
+<a href="#259" id="259">259</a>
+<a href="#260" id="260">260</a>
+<a href="#261" id="261">261</a>
+<a href="#262" id="262">262</a>
+<a href="#263" id="263">263</a>
+<a href="#264" id="264">264</a>
+<a href="#265" id="265">265</a>
+<a href="#266" id="266">266</a>
+<a href="#267" id="267">267</a>
+<a href="#268" id="268">268</a>
+<a href="#269" id="269">269</a>
+<a href="#270" id="270">270</a>
+<a href="#271" id="271">271</a>
+<a href="#272" id="272">272</a>
+<a href="#273" id="273">273</a>
+<a href="#274" id="274">274</a>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2023 Greptime Team
 //
 // Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -274,9 +291,9 @@
 
 <span class="kw">use </span>api::v1::meta::store_client::StoreClient;
 <span class="kw">use </span>api::v1::meta::{
-    BatchPutRequest, BatchPutResponse, CompareAndPutRequest, CompareAndPutResponse,
-    DeleteRangeRequest, DeleteRangeResponse, MoveValueRequest, MoveValueResponse, PutRequest,
-    PutResponse, RangeRequest, RangeResponse,
+    BatchGetRequest, BatchGetResponse, BatchPutRequest, BatchPutResponse, CompareAndPutRequest,
+    CompareAndPutResponse, DeleteRangeRequest, DeleteRangeResponse, MoveValueRequest,
+    MoveValueResponse, PutRequest, PutResponse, RangeRequest, RangeResponse,
 };
 <span class="kw">use </span>common_grpc::channel_manager::ChannelManager;
 <span class="kw">use </span>snafu::{ensure, OptionExt, ResultExt};
@@ -325,6 +342,11 @@
     <span class="kw">pub async fn </span>put(<span class="kw-2">&amp;</span><span class="self">self</span>, req: PutRequest) -&gt; <span class="prelude-ty">Result</span>&lt;PutResponse&gt; {
         <span class="kw">let </span>inner = <span class="self">self</span>.inner.read().<span class="kw">await</span>;
         inner.put(req).<span class="kw">await
+    </span>}
+
+    <span class="kw">pub async fn </span>batch_get(<span class="kw-2">&amp;</span><span class="self">self</span>, req: BatchGetRequest) -&gt; <span class="prelude-ty">Result</span>&lt;BatchGetResponse&gt; {
+        <span class="kw">let </span>inner = <span class="self">self</span>.inner.read().<span class="kw">await</span>;
+        inner.batch_get(req).<span class="kw">await
     </span>}
 
     <span class="kw">pub async fn </span>batch_put(<span class="kw-2">&amp;</span><span class="self">self</span>, req: BatchPutRequest) -&gt; <span class="prelude-ty">Result</span>&lt;BatchPutResponse&gt; {
@@ -394,6 +416,18 @@
         <span class="kw">let </span><span class="kw-2">mut </span>client = <span class="self">self</span>.random_client()<span class="question-mark">?</span>;
         req.set_header(<span class="self">self</span>.id);
         <span class="kw">let </span>res = client.put(req).<span class="kw">await</span>.context(error::TonicStatusSnafu)<span class="question-mark">?</span>;
+
+        <span class="prelude-val">Ok</span>(res.into_inner())
+    }
+
+    <span class="kw">async fn </span>batch_get(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>req: BatchGetRequest) -&gt; <span class="prelude-ty">Result</span>&lt;BatchGetResponse&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>client = <span class="self">self</span>.random_client()<span class="question-mark">?</span>;
+        req.set_header(<span class="self">self</span>.id);
+
+        <span class="kw">let </span>res = client
+            .batch_get(req)
+            .<span class="kw">await
+            </span>.context(error::TonicStatusSnafu)<span class="question-mark">?</span>;
 
         <span class="prelude-val">Ok</span>(res.into_inner())
     }

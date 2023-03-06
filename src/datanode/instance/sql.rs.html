@@ -483,7 +483,7 @@
 <span class="kw">use </span>futures::StreamExt;
 <span class="kw">use </span>query::parser::{PromQuery, QueryLanguageParser, QueryStatement};
 <span class="kw">use </span>servers::error <span class="kw">as </span>server_error;
-<span class="kw">use </span>servers::promql::PromqlHandler;
+<span class="kw">use </span>servers::prom::PromHandler;
 <span class="kw">use </span>servers::query_handler::sql::SqlQueryHandler;
 <span class="kw">use </span>session::context::{QueryContext, QueryContextRef};
 <span class="kw">use </span>snafu::prelude::<span class="kw-2">*</span>;
@@ -825,7 +825,7 @@
 }
 
 <span class="attr">#[async_trait]
-</span><span class="kw">impl </span>PromqlHandler <span class="kw">for </span>Instance {
+</span><span class="kw">impl </span>PromHandler <span class="kw">for </span>Instance {
     <span class="kw">async fn </span>do_query(<span class="kw-2">&amp;</span><span class="self">self</span>, query: <span class="kw-2">&amp;</span>PromQuery) -&gt; server_error::Result&lt;Output&gt; {
         <span class="kw">let </span>_timer = <span class="macro">timer!</span>(metric::METRIC_HANDLE_PROMQL_ELAPSED);
 

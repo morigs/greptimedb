@@ -43,6 +43,8 @@
 <a href="#43" id="43">43</a>
 <a href="#44" id="44">44</a>
 <a href="#45" id="45">45</a>
+<a href="#46" id="46">46</a>
+<a href="#47" id="47">47</a>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2023 Greptime Team
 //
 // Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -60,9 +62,9 @@
 </span><span class="kw">use </span>std::sync::Arc;
 
 <span class="kw">use </span>api::v1::meta::{
-    BatchPutRequest, BatchPutResponse, CompareAndPutRequest, CompareAndPutResponse,
-    DeleteRangeRequest, DeleteRangeResponse, MoveValueRequest, MoveValueResponse, PutRequest,
-    PutResponse, RangeRequest, RangeResponse,
+    BatchGetRequest, BatchGetResponse, BatchPutRequest, BatchPutResponse, CompareAndPutRequest,
+    CompareAndPutResponse, DeleteRangeRequest, DeleteRangeResponse, MoveValueRequest,
+    MoveValueResponse, PutRequest, PutResponse, RangeRequest, RangeResponse,
 };
 
 <span class="kw">use </span><span class="kw">crate</span>::error::Result;
@@ -75,6 +77,8 @@
     <span class="kw">async fn </span>range(<span class="kw-2">&amp;</span><span class="self">self</span>, req: RangeRequest) -&gt; <span class="prelude-ty">Result</span>&lt;RangeResponse&gt;;
 
     <span class="kw">async fn </span>put(<span class="kw-2">&amp;</span><span class="self">self</span>, req: PutRequest) -&gt; <span class="prelude-ty">Result</span>&lt;PutResponse&gt;;
+
+    <span class="kw">async fn </span>batch_get(<span class="kw-2">&amp;</span><span class="self">self</span>, req: BatchGetRequest) -&gt; <span class="prelude-ty">Result</span>&lt;BatchGetResponse&gt;;
 
     <span class="kw">async fn </span>batch_put(<span class="kw-2">&amp;</span><span class="self">self</span>, req: BatchPutRequest) -&gt; <span class="prelude-ty">Result</span>&lt;BatchPutResponse&gt;;
 

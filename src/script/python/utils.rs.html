@@ -52,6 +52,14 @@
 <a href="#52" id="52">52</a>
 <a href="#53" id="53">53</a>
 <a href="#54" id="54">54</a>
+<a href="#55" id="55">55</a>
+<a href="#56" id="56">56</a>
+<a href="#57" id="57">57</a>
+<a href="#58" id="58">58</a>
+<a href="#59" id="59">59</a>
+<a href="#60" id="60">60</a>
+<a href="#61" id="61">61</a>
+<a href="#62" id="62">62</a>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2023 Greptime Team
 //
 // Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -67,9 +75,11 @@
 // limitations under the License.
 
 </span><span class="kw">use </span>futures::Future;
+<span class="kw">use </span>once_cell::sync::OnceCell;
 <span class="kw">use </span>rustpython_vm::builtins::PyBaseExceptionRef;
 <span class="kw">use </span>rustpython_vm::{PyObjectRef, PyPayload, VirtualMachine};
 <span class="kw">use </span>snafu::{Backtrace, GenerateImplicitData};
+<span class="kw">use </span>tokio::runtime::Runtime;
 
 <span class="kw">use </span><span class="kw">crate</span>::python::error;
 
@@ -93,7 +103,12 @@
         backtrace: Backtrace::generate(),
     }
 }
-
+<span class="kw">static </span>LOCAL_RUNTIME: OnceCell&lt;tokio::runtime::Runtime&gt; = OnceCell::new();
+<span class="kw">fn </span>get_local_runtime() -&gt; std::thread::Result&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>Runtime&gt; {
+    <span class="kw">let </span>rt = LOCAL_RUNTIME
+        .get_or_try_init(|| tokio::runtime::Runtime::new().map_err(|e| Box::new(e) <span class="kw">as _</span>))<span class="question-mark">?</span>;
+    <span class="prelude-val">Ok</span>(rt)
+}
 <span class="doccomment">/// a terrible hack to call async from sync by:
 /// TODO(discord9): find a better way
 /// 1. spawn a new thread
@@ -103,7 +118,8 @@
     </span>F: Future&lt;Output = T&gt; + Send + <span class="lifetime">&#39;static</span>,
     T: Send + <span class="lifetime">&#39;static</span>,
 {
-    <span class="kw">let </span>rt = tokio::runtime::Runtime::new().map_err(|e| Box::new(e) <span class="kw">as _</span>)<span class="question-mark">?</span>;
+    <span class="kw">let </span>rt = get_local_runtime()<span class="question-mark">?</span>;
+
     std::thread::spawn(<span class="kw">move </span>|| rt.block_on(f)).join()
 }
 </code></pre></div>

@@ -378,6 +378,15 @@
 <a href="#378" id="378">378</a>
 <a href="#379" id="379">379</a>
 <a href="#380" id="380">380</a>
+<a href="#381" id="381">381</a>
+<a href="#382" id="382">382</a>
+<a href="#383" id="383">383</a>
+<a href="#384" id="384">384</a>
+<a href="#385" id="385">385</a>
+<a href="#386" id="386">386</a>
+<a href="#387" id="387">387</a>
+<a href="#388" id="388">388</a>
+<a href="#389" id="389">389</a>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2023 Greptime Team
 //
 // Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -408,8 +417,8 @@
 <span class="kw">use </span>frontend::mysql::MysqlOptions;
 <span class="kw">use </span>frontend::opentsdb::OpentsdbOptions;
 <span class="kw">use </span>frontend::postgres::PostgresOptions;
+<span class="kw">use </span>frontend::prom::PromOptions;
 <span class="kw">use </span>frontend::prometheus::PrometheusOptions;
-<span class="kw">use </span>frontend::promql::PromqlOptions;
 <span class="kw">use </span>serde::{Deserialize, Serialize};
 <span class="kw">use </span>servers::http::HttpOptions;
 <span class="kw">use </span>servers::tls::{TlsMode, TlsOption};
@@ -457,7 +466,7 @@
     <span class="kw">pub </span>opentsdb_options: <span class="prelude-ty">Option</span>&lt;OpentsdbOptions&gt;,
     <span class="kw">pub </span>influxdb_options: <span class="prelude-ty">Option</span>&lt;InfluxdbOptions&gt;,
     <span class="kw">pub </span>prometheus_options: <span class="prelude-ty">Option</span>&lt;PrometheusOptions&gt;,
-    <span class="kw">pub </span>promql_options: <span class="prelude-ty">Option</span>&lt;PromqlOptions&gt;,
+    <span class="kw">pub </span>prom_options: <span class="prelude-ty">Option</span>&lt;PromOptions&gt;,
     <span class="kw">pub </span>wal: WalConfig,
     <span class="kw">pub </span>storage: ObjectStoreConfig,
     <span class="kw">pub </span>compaction: CompactionConfig,
@@ -476,7 +485,7 @@
             opentsdb_options: <span class="prelude-val">Some</span>(OpentsdbOptions::default()),
             influxdb_options: <span class="prelude-val">Some</span>(InfluxdbOptions::default()),
             prometheus_options: <span class="prelude-val">Some</span>(PrometheusOptions::default()),
-            promql_options: <span class="prelude-val">Some</span>(PromqlOptions::default()),
+            prom_options: <span class="prelude-val">Some</span>(PromOptions::default()),
             wal: WalConfig::default(),
             storage: ObjectStoreConfig::default(),
             compaction: CompactionConfig::default(),
@@ -496,7 +505,7 @@
             opentsdb_options: <span class="self">self</span>.opentsdb_options,
             influxdb_options: <span class="self">self</span>.influxdb_options,
             prometheus_options: <span class="self">self</span>.prometheus_options,
-            promql_options: <span class="self">self</span>.promql_options,
+            prom_options: <span class="self">self</span>.prom_options,
             meta_client_options: <span class="prelude-val">None</span>,
         }
     }
@@ -521,6 +530,8 @@
     </span>rpc_addr: <span class="prelude-ty">Option</span>&lt;String&gt;,
     <span class="attr">#[clap(long)]
     </span>mysql_addr: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="attr">#[clap(long)]
+    </span>prom_addr: <span class="prelude-ty">Option</span>&lt;String&gt;,
     <span class="attr">#[clap(long)]
     </span>postgres_addr: <span class="prelude-ty">Option</span>&lt;String&gt;,
     <span class="attr">#[clap(long)]
@@ -634,6 +645,11 @@
                 ..Default::default()
             })
         }
+
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(addr) = cmd.prom_addr {
+            opts.prom_options = <span class="prelude-val">Some</span>(PromOptions { addr })
+        }
+
         <span class="kw">if let </span><span class="prelude-val">Some</span>(addr) = cmd.postgres_addr {
             opts.postgres_options = <span class="prelude-val">Some</span>(PostgresOptions {
                 addr,
@@ -682,6 +698,7 @@
             http_addr: <span class="prelude-val">None</span>,
             rpc_addr: <span class="prelude-val">None</span>,
             mysql_addr: <span class="prelude-val">None</span>,
+            prom_addr: <span class="prelude-val">None</span>,
             postgres_addr: <span class="prelude-val">None</span>,
             opentsdb_addr: <span class="prelude-val">None</span>,
             config_file: <span class="prelude-val">Some</span>(<span class="macro">format!</span>(
@@ -727,6 +744,7 @@
         <span class="kw">let </span>command = StartCommand {
             http_addr: <span class="prelude-val">None</span>,
             rpc_addr: <span class="prelude-val">None</span>,
+            prom_addr: <span class="prelude-val">None</span>,
             mysql_addr: <span class="prelude-val">None</span>,
             postgres_addr: <span class="prelude-val">None</span>,
             opentsdb_addr: <span class="prelude-val">None</span>,

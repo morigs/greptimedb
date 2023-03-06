@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["block_on_async","format_py_error","is_instance","py_vec_obj_to_array"],"type":["PyVectorRef"]};
+window.SIDEBAR_ITEMS = {"fn":["format_py_error","is_instance","py_obj_to_value","py_obj_to_vec"],"macro":["obj2val"],"type":["PyVectorRef"]};

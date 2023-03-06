@@ -1,3 +1,3 @@
 (function() {var implementors = {
-"servers":[["impl IntoResponse for <a class=\"enum\" href=\"servers/error/enum.Error.html\" title=\"enum servers::error::Error\">Error</a>"],["impl IntoResponse for <a class=\"struct\" href=\"servers/query_handler/struct.PrometheusResponse.html\" title=\"struct servers::query_handler::PrometheusResponse\">PrometheusResponse</a>"]]
+"servers":[["impl IntoResponse for <a class=\"struct\" href=\"servers/query_handler/struct.PrometheusResponse.html\" title=\"struct servers::query_handler::PrometheusResponse\">PrometheusResponse</a>"],["impl IntoResponse for <a class=\"enum\" href=\"servers/error/enum.Error.html\" title=\"enum servers::error::Error\">Error</a>"]]
 };if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

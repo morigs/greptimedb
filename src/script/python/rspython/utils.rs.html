@@ -129,6 +129,16 @@
 <a href="#129" id="129">129</a>
 <a href="#130" id="130">130</a>
 <a href="#131" id="131">131</a>
+<a href="#132" id="132">132</a>
+<a href="#133" id="133">133</a>
+<a href="#134" id="134">134</a>
+<a href="#135" id="135">135</a>
+<a href="#136" id="136">136</a>
+<a href="#137" id="137">137</a>
+<a href="#138" id="138">138</a>
+<a href="#139" id="139">139</a>
+<a href="#140" id="140">140</a>
+<a href="#141" id="141">141</a>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2023 Greptime Team
 //
 // Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -148,12 +158,12 @@
 <span class="kw">use </span>datafusion_common::ScalarValue;
 <span class="kw">use </span>datafusion_expr::ColumnarValue <span class="kw">as </span>DFColValue;
 <span class="kw">use </span>datatypes::prelude::ScalarVector;
+<span class="kw">use </span>datatypes::value::Value;
 <span class="kw">use </span>datatypes::vectors::{
     BooleanVector, Float64Vector, Helper, Int64Vector, NullVector, StringVector, VectorRef,
 };
-<span class="kw">use </span>futures::Future;
 <span class="kw">use </span>rustpython_vm::builtins::{PyBaseExceptionRef, PyBool, PyFloat, PyInt, PyList, PyStr};
-<span class="kw">use </span>rustpython_vm::{PyObjectRef, PyPayload, PyRef, VirtualMachine};
+<span class="kw">use </span>rustpython_vm::{PyObjectRef, PyPayload, PyRef, PyResult, VirtualMachine};
 <span class="kw">use </span>snafu::{Backtrace, GenerateImplicitData, OptionExt, ResultExt};
 
 <span class="kw">use </span><span class="kw">crate</span>::python::error;
@@ -184,8 +194,32 @@
     }
 }
 
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>py_obj_to_value(obj: <span class="kw-2">&amp;</span>PyObjectRef, vm: <span class="kw-2">&amp;</span>VirtualMachine) -&gt; PyResult&lt;Value&gt; {
+    <span class="macro">macro_rules! </span>obj2val {
+        (<span class="macro-nonterminal">$OBJ</span>: ident, $(<span class="macro-nonterminal">$PY_TYPE</span>: ident =&gt; <span class="macro-nonterminal">$RS_TYPE</span>: ident =&gt; <span class="macro-nonterminal">$VARIANT</span>: ident),<span class="kw-2">*</span>) =&gt; {
+            $(
+                <span class="kw">if </span>is_instance::&lt;<span class="macro-nonterminal">$PY_TYPE</span>&gt;(<span class="macro-nonterminal">$OBJ</span>, vm) {
+                    <span class="kw">let </span>val = <span class="macro-nonterminal">$OBJ
+                        </span>.to_owned()
+                        .try_into_value::&lt;<span class="macro-nonterminal">$RS_TYPE</span>&gt;(vm)<span class="question-mark">?</span>;
+                    <span class="prelude-val">Ok</span>(Value::<span class="macro-nonterminal">$VARIANT</span>(val.into()))
+                }
+            )<span class="kw">else</span>*
+            <span class="kw">else </span>{
+                <span class="prelude-val">Err</span>(vm.new_runtime_error(<span class="macro">format!</span>(<span class="string">&quot;can&#39;t convert obj {obj:?} to Value&quot;</span>)))
+            }
+        };
+    }
+    <span class="macro">obj2val!</span>(obj,
+        PyBool =&gt; bool =&gt; Boolean,
+        PyInt =&gt; i64 =&gt; Int64,
+        PyFloat =&gt; f64 =&gt; Float64,
+        PyStr =&gt; String =&gt; String
+    )
+}
+
 <span class="doccomment">/// convert a single PyVector or a number(a constant)(wrapping in PyObjectRef) into a Array(or a constant array)
-</span><span class="kw">pub fn </span>py_vec_obj_to_array(
+</span><span class="kw">pub fn </span>py_obj_to_vec(
     obj: <span class="kw-2">&amp;</span>PyObjectRef,
     vm: <span class="kw-2">&amp;</span>VirtualMachine,
     col_len: usize,
@@ -245,20 +279,6 @@
     } <span class="kw">else </span>{
         ret_other_error_with(<span class="macro">format!</span>(<span class="string">&quot;Expect a vector or a constant, found {obj:?}&quot;</span>)).fail()
     }
-}
-
-<span class="doccomment">/// a terrible hack to call async from sync by:
-/// TODO(discord9): find a better way
-/// 1. spawn a new thread
-/// 2. create a new runtime in new thread and call `block_on` on it
-</span><span class="attr">#[allow(unused)]
-</span><span class="kw">pub fn </span>block_on_async&lt;T, F&gt;(f: F) -&gt; std::thread::Result&lt;T&gt;
-<span class="kw">where
-    </span>F: Future&lt;Output = T&gt; + Send + <span class="lifetime">&#39;static</span>,
-    T: Send + <span class="lifetime">&#39;static</span>,
-{
-    <span class="kw">let </span>rt = tokio::runtime::Runtime::new().map_err(|e| Box::new(e) <span class="kw">as _</span>)<span class="question-mark">?</span>;
-    std::thread::spawn(<span class="kw">move </span>|| rt.block_on(f)).join()
 }
 </code></pre></div>
 </section></main><div id="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="script" data-themes="" data-resource-suffix="" data-rustdoc-version="1.69.0-nightly (34e6673a0 2023-02-25)" data-search-js="search-14421e1532aead08.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>

@@ -867,6 +867,32 @@
 <a href="#867" id="867">867</a>
 <a href="#868" id="868">868</a>
 <a href="#869" id="869">869</a>
+<a href="#870" id="870">870</a>
+<a href="#871" id="871">871</a>
+<a href="#872" id="872">872</a>
+<a href="#873" id="873">873</a>
+<a href="#874" id="874">874</a>
+<a href="#875" id="875">875</a>
+<a href="#876" id="876">876</a>
+<a href="#877" id="877">877</a>
+<a href="#878" id="878">878</a>
+<a href="#879" id="879">879</a>
+<a href="#880" id="880">880</a>
+<a href="#881" id="881">881</a>
+<a href="#882" id="882">882</a>
+<a href="#883" id="883">883</a>
+<a href="#884" id="884">884</a>
+<a href="#885" id="885">885</a>
+<a href="#886" id="886">886</a>
+<a href="#887" id="887">887</a>
+<a href="#888" id="888">888</a>
+<a href="#889" id="889">889</a>
+<a href="#890" id="890">890</a>
+<a href="#891" id="891">891</a>
+<a href="#892" id="892">892</a>
+<a href="#893" id="893">893</a>
+<a href="#894" id="894">894</a>
+<a href="#895" id="895">895</a>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2023 Greptime Team
 //
 // Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -901,9 +927,10 @@
 <span class="kw">use </span><span class="kw">crate</span>::rpc::lock::{LockRequest, LockResponse, UnlockRequest};
 <span class="kw">use </span><span class="kw">crate</span>::rpc::router::DeleteRequest;
 <span class="kw">use </span><span class="kw">crate</span>::rpc::{
-    BatchPutRequest, BatchPutResponse, CompareAndPutRequest, CompareAndPutResponse, CreateRequest,
-    DeleteRangeRequest, DeleteRangeResponse, MoveValueRequest, MoveValueResponse, PutRequest,
-    PutResponse, RangeRequest, RangeResponse, RouteRequest, RouteResponse,
+    BatchGetRequest, BatchGetResponse, BatchPutRequest, BatchPutResponse, CompareAndPutRequest,
+    CompareAndPutResponse, CreateRequest, DeleteRangeRequest, DeleteRangeResponse,
+    MoveValueRequest, MoveValueResponse, PutRequest, PutResponse, RangeRequest, RangeResponse,
+    RouteRequest, RouteResponse,
 };
 
 <span class="kw">pub type </span>Id = (u64, u64);
@@ -1112,6 +1139,11 @@
     <span class="doccomment">/// Put puts the given key into the key-value store.
     </span><span class="kw">pub async fn </span>put(<span class="kw-2">&amp;</span><span class="self">self</span>, req: PutRequest) -&gt; <span class="prelude-ty">Result</span>&lt;PutResponse&gt; {
         <span class="self">self</span>.store_client()<span class="question-mark">?</span>.put(req.into()).<span class="kw">await</span><span class="question-mark">?</span>.try_into()
+    }
+
+    <span class="doccomment">/// BatchGet atomically get values by the given keys from the key-value store.
+    </span><span class="kw">pub async fn </span>batch_get(<span class="kw-2">&amp;</span><span class="self">self</span>, req: BatchGetRequest) -&gt; <span class="prelude-ty">Result</span>&lt;BatchGetResponse&gt; {
+        <span class="self">self</span>.store_client()<span class="question-mark">?</span>.batch_get(req.into()).<span class="kw">await</span><span class="question-mark">?</span>.try_into()
     }
 
     <span class="doccomment">/// BatchPut atomically puts the given keys into the key-value store.
@@ -1580,6 +1612,26 @@
         <span class="kw">let </span>res = tc.client.range(req).<span class="kw">await</span>;
         <span class="kw">let </span>kvs = res.unwrap().take_kvs();
         <span class="macro">assert_eq!</span>(<span class="number">2</span>, kvs.len());
+    }
+
+    <span class="attr">#[tokio::test]
+    </span><span class="kw">async fn </span>test_batch_get() {
+        <span class="kw">let </span>tc = new_client(<span class="string">&quot;test_batch_get&quot;</span>).<span class="kw">await</span>;
+        tc.gen_data().<span class="kw">await</span>;
+
+        <span class="kw">let </span>req = BatchGetRequest::default()
+            .add_key(tc.key(<span class="string">&quot;key-1&quot;</span>))
+            .add_key(tc.key(<span class="string">&quot;key-2&quot;</span>));
+        <span class="kw">let </span><span class="kw-2">mut </span>res = tc.client.batch_get(req).<span class="kw">await</span>.unwrap();
+
+        <span class="macro">assert_eq!</span>(<span class="number">2</span>, res.take_kvs().len());
+
+        <span class="kw">let </span>req = BatchGetRequest::default()
+            .add_key(tc.key(<span class="string">&quot;key-1&quot;</span>))
+            .add_key(tc.key(<span class="string">&quot;key-222&quot;</span>));
+        <span class="kw">let </span><span class="kw-2">mut </span>res = tc.client.batch_get(req).<span class="kw">await</span>.unwrap();
+
+        <span class="macro">assert_eq!</span>(<span class="number">1</span>, res.take_kvs().len());
     }
 
     <span class="attr">#[tokio::test]

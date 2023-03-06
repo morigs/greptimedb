@@ -177,6 +177,22 @@
 <a href="#177" id="177">177</a>
 <a href="#178" id="178">178</a>
 <a href="#179" id="179">179</a>
+<a href="#180" id="180">180</a>
+<a href="#181" id="181">181</a>
+<a href="#182" id="182">182</a>
+<a href="#183" id="183">183</a>
+<a href="#184" id="184">184</a>
+<a href="#185" id="185">185</a>
+<a href="#186" id="186">186</a>
+<a href="#187" id="187">187</a>
+<a href="#188" id="188">188</a>
+<a href="#189" id="189">189</a>
+<a href="#190" id="190">190</a>
+<a href="#191" id="191">191</a>
+<a href="#192" id="192">192</a>
+<a href="#193" id="193">193</a>
+<a href="#194" id="194">194</a>
+<a href="#195" id="195">195</a>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2023 Greptime Team
 //
 // Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -354,6 +370,22 @@
         <span class="kw">let </span>(decode_list, p) = TableMetaActionList::decode(<span class="kw-2">&amp;</span>bs, <span class="number">1</span>).unwrap();
         <span class="macro">assert_eq!</span>(decode_list, action_list);
         <span class="macro">assert_eq!</span>(p.unwrap(), protocol);
+    }
+
+    <span class="comment">// These tests are used to ensure backward compatibility of manifest files.
+    // DO NOT modify the serialized string when they fail, check if your
+    // modification to manifest-related structs is compatible with older manifests.
+    </span><span class="attr">#[test]
+    </span><span class="kw">fn </span>test_table_manifest_compatibility() {
+        <span class="kw">let </span>table_change = <span class="string">r#&quot;{&quot;table_info&quot;:{&quot;ident&quot;:{&quot;table_id&quot;:0,&quot;version&quot;:0},&quot;name&quot;:&quot;demo&quot;,&quot;desc&quot;:null,&quot;catalog_name&quot;:&quot;greptime&quot;,&quot;schema_name&quot;:&quot;public&quot;,&quot;meta&quot;:{&quot;schema&quot;:{&quot;column_schemas&quot;:[{&quot;name&quot;:&quot;host&quot;,&quot;data_type&quot;:{&quot;String&quot;:null},&quot;is_nullable&quot;:false,&quot;is_time_index&quot;:false,&quot;default_constraint&quot;:null,&quot;metadata&quot;:{}},{&quot;name&quot;:&quot;cpu&quot;,&quot;data_type&quot;:{&quot;Float64&quot;:{}},&quot;is_nullable&quot;:true,&quot;is_time_index&quot;:false,&quot;default_constraint&quot;:null,&quot;metadata&quot;:{}},{&quot;name&quot;:&quot;memory&quot;,&quot;data_type&quot;:{&quot;Float64&quot;:{}},&quot;is_nullable&quot;:false,&quot;is_time_index&quot;:false,&quot;default_constraint&quot;:null,&quot;metadata&quot;:{}},{&quot;name&quot;:&quot;ts&quot;,&quot;data_type&quot;:{&quot;Timestamp&quot;:{&quot;Millisecond&quot;:null}},&quot;is_nullable&quot;:true,&quot;is_time_index&quot;:true,&quot;default_constraint&quot;:null,&quot;metadata&quot;:{&quot;greptime:time_index&quot;:&quot;true&quot;}}],&quot;timestamp_index&quot;:3,&quot;version&quot;:0},&quot;primary_key_indices&quot;:[0],&quot;value_indices&quot;:[1,2,3],&quot;engine&quot;:&quot;mito&quot;,&quot;next_column_id&quot;:1,&quot;region_numbers&quot;:[],&quot;engine_options&quot;:{},&quot;options&quot;:{&quot;write_buffer_size&quot;:null,&quot;ttl&quot;:null,&quot;extra_options&quot;:{}},&quot;created_on&quot;:&quot;2023-03-06T08:50:34.662020Z&quot;},&quot;table_type&quot;:&quot;Base&quot;}}&quot;#</span>;
+        serde_json::from_str::&lt;TableChange&gt;(table_change).unwrap();
+
+        <span class="kw">let </span>table_remove =
+            <span class="string">r#&quot;{&quot;table_ident&quot;:{&quot;table_id&quot;:42,&quot;version&quot;:0},&quot;table_name&quot;:&quot;test_table&quot;}&quot;#</span>;
+        serde_json::from_str::&lt;TableRemove&gt;(table_remove).unwrap();
+
+        <span class="kw">let </span>protocol_action = <span class="string">r#&quot;{&quot;min_reader_version&quot;:0,&quot;min_writer_version&quot;:1}&quot;#</span>;
+        serde_json::from_str::&lt;ProtocolAction&gt;(protocol_action).unwrap();
     }
 }
 </code></pre></div>
